@@ -1,0 +1,19 @@
+form {
+    display: block;
+    width: 50%;
+    height: 50%;
+    margin: auto;
+    padding: 10px;
+    background-color: rgb(225, 245, 250);
+}
+
+.block {
+    display: block;
+    width: 50%;
+    margin: auto;
+    padding: 10px;
+}
+
+input, label {
+    display:block;
+}
