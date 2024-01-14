@@ -1,19 +1,10 @@
-import "./css/form.css";
+
+
+import LogIn from "./pages/account/LogIn";
 
 function App() {
   return (
-    <div className="App">
-      <form>
-        <div className="block">
-          <label>Email:</label>
-          <input />
-        </div>
-        <div className="block">
-          <label>Password:</label>
-          <input />
-        </div>
-      </form>
-    </div>
+    <LogIn />
   );
 }
 
