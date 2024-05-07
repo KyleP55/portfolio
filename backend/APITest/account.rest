@@ -1,0 +1,22 @@
+//Create 
+POST http://localhost:5000/Accounts/createAccount/ 
+Content-Type: application/json
+
+{
+    "userName": "Account Preview", "email": "test@email.com", "password": "1234"
+}
+
+###
+
+//Log In 
+POST http://localhost:5000/Accounts/login/ 
+Content-Type: application/json
+
+{
+    "email": "test@email.com", "password": "1234"
+}
+###
+
+//Log In 
+POST http://localhost:5000/getMessage 
+Content-Type: application/json

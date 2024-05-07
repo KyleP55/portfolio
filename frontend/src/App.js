@@ -1,6 +1,6 @@
 
 
-import LogIn from "./pages/account/LogIn";
+import LogIn from "./pages/LogIn";
 
 function App() {
   return (
