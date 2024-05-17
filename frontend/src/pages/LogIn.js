@@ -3,25 +3,26 @@ import { useState } from 'react';
 import "../css/form.css";
 
 function LogIn() {
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState();
 
     return (<div>
         <h1>Log In!</h1>
         <form>
-            <label>Access Code:</label>
+            <label>User Email:</label>
             <input
                 type="text"
-                placeholder='Enter Code'
-                onChange={(e) => setPassword(e.target.value)}
-                value={password}
+                placeholder='email@email.com'
+                onChange={(e) => setEmail(e.target.value)}
+                value={email}
                 maxlength="4"
             />
 
-            <label>Access Code:</label>
+            <label>Password:</label>
             <input
                 type="text"
-                placeholder='Enter Code'
+                placeholder='Password'
                 onChange={(e) => setPassword(e.target.value)}
                 value={password}
                 maxlength="4"

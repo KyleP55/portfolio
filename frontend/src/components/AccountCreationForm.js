@@ -1,14 +1,13 @@
 import { useState } from "react";
 import axios from "axios";
 
-import { emailVali, passVali, passMatch, userVali } from '../../util/formValidation.js';
+import { emailVali, passVali, passMatch, userVali } from '../util/formValidation.js';
 
 function AccountCreationForm({ created }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [name, setName] = useState('');
-    const [dob, setDoB] = useState()
     const [error, setError] = useState([null, null, null, null]);
 
     useState(() => { console.log(confirmPassword) }, [confirmPassword])

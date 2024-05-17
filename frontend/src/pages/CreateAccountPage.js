@@ -1,8 +1,7 @@
 import { useState } from 'react';
 
-import SideNav from '../components/ui/SideNav';
-import AccountCreationForm from '../components/semi-pages/AccountCreationForm.js';
-import AccountCreated from '../components/semi-pages/AccountCreated.js';
+import AccountCreationForm from '../components/AccountCreationForm.js';
+import AccountCreated from '../components/AccountCreated.js';
 
 
 function CreateAccountPage() {
@@ -13,7 +12,6 @@ function CreateAccountPage() {
     }
 
     return (<>
-        <SideNav />
         {!created && <AccountCreationForm created={toggle} />}
         {created && <AccountCreated />}
     </>);
