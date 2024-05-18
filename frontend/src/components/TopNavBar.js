@@ -24,7 +24,7 @@ function TopNavBar() {
         <a onClick={toggleWindow} className="accountText">
             Log In
         </a>
-        <Link to="/account/login" className="accountText">
+        <Link to="/createAccount" className="accountText">
             Create Account
         </Link>
     </>
@@ -48,8 +48,8 @@ function TopNavBar() {
 
             </div>
             <div className="accountBars">
-                {!logInWindow && unauthed}
-                {logInWindow && authed}
+                {!userContext.id && unauthed}
+                {userContext.id && authed}
             </div>
         </div>
         <Outlet />

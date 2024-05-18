@@ -50,52 +50,54 @@ function AccountCreationForm({ created }) {
     }
 
     return (<>
-        <div className="page">
-            <form className="formContainer centerDiv">
-                <h1>Create Account!</h1>
+        <div className="row justify-content-center">
+            <div className="col-xs-12 col-md-8 col-lg-6">
+                <form className="formContainer">
+                    <h1>Create Account!</h1>
 
-                <label>Email:</label>
-                <input
-                    type="text"
-                    placeholder='Enter Email'
-                    onChange={(e) => setEmail(e.target.value)}
-                    value={email}
-                />
-                <p className='errorMessage'>{error[0]}</p>
+                    <label>Email:</label>
+                    <input
+                        type="text"
+                        placeholder='Enter Email'
+                        onChange={(e) => setEmail(e.target.value)}
+                        value={email}
+                    />
+                    <p className='errorMessage'>{error[0]}</p>
 
 
-                <label>Password:</label>
-                <input
-                    type="password"
-                    placeholder='Enter Password'
-                    onChange={(e) => setPassword(e.target.value)}
-                    value={password}
-                />
-                <p className='errorMessage'>{error[1]}</p>
+                    <label>Password:</label>
+                    <input
+                        type="password"
+                        placeholder='Enter Password'
+                        onChange={(e) => setPassword(e.target.value)}
+                        value={password}
+                    />
+                    <p className='errorMessage'>{error[1]}</p>
 
-                <label>Confirm Password:</label>
-                <input
-                    type="password"
-                    placeholder='Confirm Email'
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    value={confirmPassword}
-                />
-                <p className='errorMessage'>{error[2]}</p>
+                    <label>Confirm Password:</label>
+                    <input
+                        type="password"
+                        placeholder='Confirm Password'
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        value={confirmPassword}
+                    />
+                    <p className='errorMessage'>{error[2]}</p>
 
-                <label>User Name:</label>
-                <input
-                    type="text"
-                    placeholder='Enter User Name'
-                    onChange={(e) => setName(e.target.value)}
-                    value={name}
-                />
-                <p className='errorMessage'>{error[3]}</p>
+                    <label>User Name:</label>
+                    <input
+                        type="text"
+                        placeholder='Enter User Name'
+                        onChange={(e) => setName(e.target.value)}
+                        value={name}
+                    />
+                    <p className='errorMessage'>{error[3]}</p>
 
-                <div className="formButtonContainer">
-                    <button onClick={onSubmitHandler} className="button">Create</button>
-                    <button type="reset" className="button cancel">Back</button>
-                </div>
-            </form>
+                    <div className="formButtonContainer">
+                        <button onClick={onSubmitHandler} className="button">Create</button>
+                        <button type="reset" className="button cancel">Back</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </>);
 }

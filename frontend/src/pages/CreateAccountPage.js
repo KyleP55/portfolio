@@ -11,10 +11,10 @@ function CreateAccountPage() {
         setCreated(true);
     }
 
-    return (<>
+    return (<div className="pageContainer">
         {!created && <AccountCreationForm created={toggle} />}
         {created && <AccountCreated />}
-    </>);
+    </div>);
 }
 
 export default CreateAccountPage;

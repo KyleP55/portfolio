@@ -1,0 +1,11 @@
+body {
+    margin: 0;
+}
+
+.pageContainer {
+    width: 100%;
+}
+
+.green {
+    background-color: chartreuse;
+}

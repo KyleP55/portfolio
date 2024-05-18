@@ -4,6 +4,8 @@ import LogIn from "./pages/LogIn";
 import TopNavBar from './components/TopNavBar';
 import CreateAccountPage from './pages/CreateAccountPage';
 
+import "./css/main.css";
+
 function App() {
   return (
     <BrowserRouter>

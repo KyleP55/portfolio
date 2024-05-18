@@ -16,7 +16,7 @@ function LogIn() {
                 placeholder='email@email.com'
                 onChange={(e) => setEmail(e.target.value)}
                 value={email}
-                maxlength="4"
+                maxLength="4"
             />
 
             <label>Password:</label>
@@ -25,7 +25,7 @@ function LogIn() {
                 placeholder='Password'
                 onChange={(e) => setPassword(e.target.value)}
                 value={password}
-                maxlength="4"
+                maxLength="4"
             />
             <p className='errorMessage'>{error}</p>
         </form>

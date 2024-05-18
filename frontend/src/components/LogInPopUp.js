@@ -28,8 +28,8 @@ function LogInPopUp({ toggle }) {
 
     return (<>
         <div className="formPopUp">
-            <form className="formContainer popUpBorder">
-                <h1 className="h1OR">Login</h1><br />
+            <form className="popUpBorder">
+                <h1>Login</h1><br />
 
                 <label><b>Email</b></label>
                 <input
