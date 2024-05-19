@@ -9,6 +9,7 @@ const port = 5000;
 
 const accountRouter = require("./routes/accountRoutes.js");
 const authCheck = require("./middleware/authCheck.js");
+const authAccountRouter = require("./routes/authAccountRoutes.js");
 
 // Connect to Mongo
 try {
@@ -27,10 +28,11 @@ app.listen(port, () => {
 app.use(express.json());
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', frontendUrl);
-    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     next();
 });
 
 app.use('/accounts', accountRouter);
 app.use(authCheck);
+app.use('/authAccounts', authAccountRouter);

@@ -1,5 +1,7 @@
 import axios from 'axios';
 import { useContext, useState } from 'react';
+import Cookies from 'js-cookie';
+
 
 import { UserContext } from '../context/userContext';
 const serverURL = process.env.REACT_APP_BACKEND_URL;
@@ -21,6 +23,7 @@ function LogInPopUp({ toggle }) {
             await axios.post(serverURL + '/accounts/login', info)
                 .then((res) => {
                     userContext.setUser(res.data.id, res.data.token, res.data.userName);
+                    Cookies.set('token', res.data.token, { expires: 1 });
                 })
         } catch (err) {
 
