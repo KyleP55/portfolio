@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import UserContextProvider from './context/userContext';
 
 import LogIn from "./pages/LogIn";
 import TopNavBar from './components/TopNavBar';
@@ -8,14 +9,16 @@ import "./css/main.css";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<TopNavBar />}>
-          <Route index element={<LogIn />} />
-          <Route path="/createAccount" element={<CreateAccountPage />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <UserContextProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<TopNavBar />}>
+            <Route index element={<LogIn />} />
+            <Route path="/createAccount" element={<CreateAccountPage />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </UserContextProvider>
   );
 }
 

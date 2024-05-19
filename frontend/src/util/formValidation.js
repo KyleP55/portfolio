@@ -1,5 +1,7 @@
 import axios from "axios";
 
+const serverURL = process.env.REACT_APP_BACKEND_URL;
+
 // Email Validation
 export async function emailVali(x) {
     // Check if empty
@@ -11,7 +13,7 @@ export async function emailVali(x) {
     if (!res) return ('Email not valid');
 
     // Check db if email is used
-    res = await axios.post('/accounts/checkEmail', { email: x });
+    res = await axios.post('localhost:5000/accounts/checkEmail', { email: x });
     if (res.data.emailTaken) return ('Account already exists with this email');
 
     return null;

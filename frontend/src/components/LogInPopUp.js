@@ -2,6 +2,7 @@ import axios from 'axios';
 import { useContext, useState } from 'react';
 
 import { UserContext } from '../context/userContext';
+const serverURL = process.env.REACT_APP_BACKEND_URL;
 
 function LogInPopUp({ toggle }) {
     const userContext = useContext(UserContext);
@@ -17,7 +18,7 @@ function LogInPopUp({ toggle }) {
                 password: pass
             }
 
-            await axios.post('/accounts/login', info)
+            await axios.post(serverURL + '/accounts/login', info)
                 .then((res) => {
                     userContext.setUser(res.data.id, res.data.token, res.data.userName);
                 })

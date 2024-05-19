@@ -84,5 +84,4 @@ function generateToken(sig) {
     return jwt.sign(sig, process.env.JWT_SECRET, { expiresIn: '60s' });
 }
 
-
 module.exports = router;

@@ -30,7 +30,7 @@ function TopNavBar() {
     </>
 
     const authed = <>
-        <p>Welcome Back **Context Name**</p>
+        <p>Welcome Back {userContext.userName}</p>
         <a onClick={console.log('todo')} className="accountText">
             Log Out
         </a>

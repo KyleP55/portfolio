@@ -1,9 +1,13 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import axios from "axios";
 
 import { emailVali, passVali, passMatch, userVali } from '../util/formValidation.js';
+import { UserContext } from '../context/userContext.js'
+
+const serverURL = process.env.REACT_APP_BACKEND_URL;
 
 function AccountCreationForm({ created }) {
+    const userContext = useContext(UserContext);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -14,23 +18,23 @@ function AccountCreationForm({ created }) {
     // Submit button
     async function onSubmitHandler(e) {
         e.preventDefault();
-        const emailRes = await emailVali(email);
-        const userRes = await userVali(name);
+        // const emailRes = await emailVali(email);
+        // const userRes = await userVali(name);
 
-        // Check Validation/Set errors
-        const newError = error.map((err, i) => {
-            if (i === 0) return (emailRes);
-            if (i === 1) return (passVali(password));
-            if (i === 2) return (passMatch(password, confirmPassword));
-            if (i === 3) return (userRes);
-            return (null);
-        });
-        setError(newError);
+        // // Check Validation/Set errors
+        // const newError = error.map((err, i) => {
+        //     if (i === 0) return (emailRes);
+        //     if (i === 1) return (passVali(password));
+        //     if (i === 2) return (passMatch(password, confirmPassword));
+        //     if (i === 3) return (userRes);
+        //     return (null);
+        // });
+        // setError(newError);
 
-        // Check if any errors exists
-        let errors = false;
-        newError.forEach((i) => { if (i !== null) errors = true; });
-        if (errors) return;
+        // // Check if any errors exists
+        // let errors = false;
+        // newError.forEach((i) => { if (i !== null) errors = true; });
+        // if (errors) return;
 
         // Submit New Account
         const info = {
@@ -40,10 +44,10 @@ function AccountCreationForm({ created }) {
         }
 
         try {
-            await axios.post('/accounts/createAccount', info)
-                .then((res) => {
-                    created();
-                });
+            await axios.post(serverURL + '/accounts/createAccount', info).then((res) => {
+                userContext.setUser(res.data.id, res.data.oken, res.data.userName);
+                created();
+            });
         } catch (err) {
             alert(err);
         }

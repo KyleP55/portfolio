@@ -4,7 +4,7 @@ module.exports = (req, res, next) => {
     console.log('checking auth')
     try {
         let token = null;
-        console.log(req.headers)
+
         if (req.headers.authorization) {
             token = req.headers.authorization.split(' ')[1];
         } else {
