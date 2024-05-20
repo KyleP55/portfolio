@@ -19,9 +19,17 @@ function TopNavBar() {
         let token = Cookies.get('token');
         async function restoreSession() {
 
-            axios.get(serverURL + '/authAccounts/context', { headers: { authorization: 'bearer ' + token } }).then((res) => {
-                console.log(res.data)
-            });
+            try {
+                axios.get(`${serverURL}/authAccounts/context`, { headers: { Authorization: "bearer " + token } })
+                    .then((res) => {
+                        userContext.setUser(res.data._id, token, res.data.userName, res.data.email);
+                    });
+
+
+            } catch (err) {
+                alert('Error Connected to Backend');
+            }
+
         }
         if (token && !userContext.userName) restoreSession();
     }, []);

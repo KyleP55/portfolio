@@ -20,3 +20,9 @@ Content-Type: application/json
 //Log In 
 POST http://localhost:5000/getMessage 
 Content-Type: application/json
+###
+
+//context 
+GET http://localhost:5000/authAccounts/context 
+Content-Type: application/json
+authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NDk4NmVjMTQ2NjY1Yzk0ZGZjNWUxMiIsImVtYWlsIjoiZW1haWxAZW1haWwuY2EiLCJ1c2VyTmFtZSI6IlRlc3Rlck5lc3RlciIsImlhdCI6MTcxNjE0MDg5NiwiZXhwIjoxNzE2MTQwOTU2fQ.H-dR2Zq_9tlcSQV0lq2Q6toG4wIdKJKumLOwz3DlxDA

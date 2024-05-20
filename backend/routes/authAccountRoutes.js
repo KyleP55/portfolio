@@ -6,14 +6,29 @@ const jwt = require('jsonwebtoken');
 
 // Get Context Info
 router.get('/context', async (req, res) => {
-    const b = req.body;
-    const account = await accountSchema.findOne({ email: b.email }, { email: 1, userName: 1, _id: 1 });
+    try {
+        const token = req.headers.authorization.split(' ')[1];
+        const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+        const id = decodedToken.id;
 
-    if (account == undefined) return res.json({ message: "User not found" });
+        const account = await accountSchema.findOne({ _id: id }, { email: 1, userName: 1, _id: 1 });
 
-    return res.json(account);
+        console.log(account)
+
+        if (account == undefined) return res.json({ message: "User not found" });
+
+        return res.json(account);
+    } catch (err) {
+        console.log(err)
+        return res.json(err);
+    }
 });
 
+// Get Context Info
+router.post('/test', async (req, res) => {
+
+    return res.json({ message: 'Hit End Point' });
+});
 
 //Generate Token
 function generateToken(sig) {

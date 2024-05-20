@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import UserContextProvider from './context/userContext';
 
-import LogIn from "./pages/LogIn";
+import HomeChatPage from "./pages/HomeChatPage";
 import TopNavBar from './components/TopNavBar';
 import CreateAccountPage from './pages/CreateAccountPage';
 
@@ -13,7 +13,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<TopNavBar />}>
-            <Route index element={<LogIn />} />
+            <Route index element={<HomeChatPage />} />
             <Route path="/createAccount" element={<CreateAccountPage />} />
           </Route>
         </Routes>

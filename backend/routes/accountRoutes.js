@@ -40,6 +40,7 @@ router.post('/createAccount', async (req, res) => {
 
 // Log In
 router.post('/login', async (req, res) => {
+    7
     const b = req.body;
     const account = await accountSchema.findOne({ email: b.email }, { email: 1, password: 1, userName: 1, _id: 1 });
 
@@ -55,6 +56,8 @@ router.post('/login', async (req, res) => {
             sig = { id: account._id, email: account.email, userName: account.userName, token: accessToken };
 
             return res.status(200).json(sig);
+        } else {
+            return res.json({ message: "Email or Password Incorrect" });
         }
     } catch (err) {
         return res.status(404).json({ message: err.message });
@@ -81,7 +84,7 @@ router.post('/checkUserName', async (req, res) => {
 
 //Generate Token
 function generateToken(sig) {
-    return jwt.sign(sig, process.env.JWT_SECRET, { expiresIn: '60s' });
+    return jwt.sign(sig, process.env.JWT_SECRET, { expiresIn: '1h' });
 }
 
 module.exports = router;
