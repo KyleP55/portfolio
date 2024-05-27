@@ -1,0 +1,62 @@
+/* Chat Bubbles */
+.bubbleContainerOther {
+    background-color: bisque;
+    border-radius: 18px 18px 18px 0px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    margin-right: 5%;
+}
+
+.bubbleContainerYou {
+    background-color: rgb(196, 241, 255);
+    border-radius: 18px 18px 0px 18px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    margin-left: 5%;
+}
+
+.messageText {
+    margin: 0;
+}
+
+.senderText {
+    margin: 0;
+    font-size: 12px;
+}
+
+/* Other Stuff */
+
+.padding16 {
+    padding: 16px;
+}
+
+.hPad8 {
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.chatContainer {
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.chatWindow {
+    overflow-y: scroll;
+    height: 100%;
+}
+
+.messageBox {
+    position: relative;
+    bottom: 0px;
+    width: 100%;
+    background-color: rgb(53, 53, 53);
+    padding: 8px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+.inputBar {
+    flex: 1;
+    margin-right: 8px;
+}

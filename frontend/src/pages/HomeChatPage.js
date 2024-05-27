@@ -1,18 +1,16 @@
 
 
 import ChatNav from "../components/ChatNav.js";
-
+import ChatBubble from "../components/ChatBubble.js";
+import ChatWindow from "../components/ChatWindow.js";
 
 
 function HomeChatPage() {
 
     return (<div className="container-fluid">
-        <div className="row vh-100">
+        <div className="row maxVH">
             <ChatNav />
-            <div className="col-lg-10">
-                <p>Some Chat Boxes</p>
-            </div>
-
+            <ChatWindow />
         </div>
     </div>);
 }
