@@ -1,0 +1,16 @@
+//Create 
+POST http://localhost:5000/Messages/ 
+Content-Type: application/json
+
+{
+    "nameSpace": "Global", 
+    "message": "Anon 1 Replying to My Message", 
+    "sender": "Anon 1", 
+    "date": "Mon May 27 2024 14:18:24 GMT-0400 (Eastern Daylight Saving Time)"
+}
+
+###
+
+//Get
+GET http://localhost:5000/Messages/Global 
+Content-Type: application/json

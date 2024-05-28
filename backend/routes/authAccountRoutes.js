@@ -13,8 +13,6 @@ router.get('/context', async (req, res) => {
 
         const account = await accountSchema.findOne({ _id: id }, { email: 1, userName: 1, _id: 1 });
 
-        console.log(account)
-
         if (account == undefined) return res.json({ message: "User not found" });
 
         return res.json(account);
