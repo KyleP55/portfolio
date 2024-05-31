@@ -1,10 +1,12 @@
 import '../css/chatNav.css';
 
-function ChatNav() {
+function ChatNav({ viewRoom }) {
 
     return (<>
         <div className="col-md-2 col-lg-2 chatNavContainer">
-            <p>List of open Chats</p>
+            <button onClick={viewRoom.bind(this, "Global")}>
+                Global Chat
+            </button>
             <p>List of Friends</p>
             <p>Add Friend Button</p>
         </div>

@@ -3,11 +3,11 @@ const router = express.Router();
 const messageSchema = require('../models/MessageSchema.js');
 
 // Get all from NameSpace
-router.get('/:nameSpace/', async (req, res) => {
+router.get('/:room/', async (req, res) => {
     try {
-        const nameSpace = req.params.nameSpace;
+        const room = req.params.room;
 
-        const messages = await messageSchema.find({ nameSpace: nameSpace });
+        const messages = await messageSchema.find({ room: room });
 
         res.status(200).json(messages);
     } catch (err) {
@@ -18,21 +18,18 @@ router.get('/:nameSpace/', async (req, res) => {
 
 // Write a message
 router.post('/', async (req, res) => {
-    console.log('should be saving message')
     try {
         const b = req.body;
 
         const newMessage = new messageSchema({
-            nameSpace: b.nameSpace,
+            room: b.room,
             message: b.message,
             sender: b.sender,
             date: b.date,
             read: false
         });
-        console.log('should be here')
 
         const res = await newMessage.save();
-        console.log(res)
         res.json(res);
     } catch (err) {
         res.json(err);

@@ -9,7 +9,7 @@ const serverURL = process.env.REACT_APP_BACKEND_URL;
 
 const socket = io(serverURL);
 
-function ChatWindow() {
+function ChatWindow({ room }) {
     const userContext = useContext(UserContext);
     const [message, setMessage] = useState('');
     const [chatMessages, setChatMessages] = useState();
@@ -17,25 +17,27 @@ function ChatWindow() {
     // Get Messages on Load
     useEffect(() => {
         async function getChat() {
-            axios.get(`${serverURL}/Messages/${"Global"}`)
+            axios.get(`${serverURL}/Messages/${room}`)
                 .then((res) => {
                     console.log(res);
                     setChatMessages(res.data);
                 });
         }
-
-        getChat();
         document.getElementById('messageInput').focus();
 
         // Socket Listner
-        socket.on('newMessage', (inc) => {
+        if (room) {
             getChat();
+            socket.emit('joinRoom', room);
+            socket.on('newMessage', (inc) => {
+                getChat();
 
-            return () => {
-                socket.disconnect();
-            }
-        });
-    }, []);
+                return () => {
+                    socket.disconnect();
+                }
+            });
+        }
+    }, [room]);
 
     // Send Message
     async function onSend() {
@@ -43,7 +45,7 @@ function ChatWindow() {
 
         if (message !== '') {
             const info = {
-                nameSpace: 'Global',
+                room: room,
                 message: message,
                 sender: userContext.userName,
                 date: date.toString()
@@ -55,7 +57,7 @@ function ChatWindow() {
                 alert(err);
             }
 
-            socket.emit('sendMessage', info);
+            socket.emit('sendMessage', room);
             setMessage('');
         }
 
@@ -84,9 +86,11 @@ function ChatWindow() {
                 </button>
             </div>
             <div className="chatWindow hPad8">
-                {chatMessages && chatMessages.map((i) => {
+                {room && chatMessages && chatMessages.map((i) => {
                     return < ChatBubble info={i} key={i._id} />
                 })}
+                {!userContext.userName && <h1>Log In!</h1>}
+                {!room && userContext.userName && <h1>Select a Room to Join</h1>}
             </div>
         </div>
     </>)

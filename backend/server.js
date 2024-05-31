@@ -36,17 +36,21 @@ server.listen(port, () => {
 
 // IO Stuff
 io.on('connection', (socket) => {
-    console.log("a new socket connected");
+    console.log(`Socket ${socket.id} Connected`);
 
-    socket.on('sendMessage', (info) => {
-        console.log('message Recieve');
-        console.log(info)
-        io.emit('newMessage', info);
+    socket.on('joinRoom', (roomName) => {
+        socket.join(roomName);
+        console.log(`Socket ${socket.id} Joined room ${roomName}`);
+    });
+
+    socket.on('sendMessage', (room) => {
+        console.log
+        io.to(room).emit('newMessage', room);
     });
 
     socket.on('disconnect', () => {
         console.log('Someone Disconnected');
-    })
+    });
 });
 
 // Middleware / Routes
