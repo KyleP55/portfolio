@@ -43,9 +43,8 @@ io.on('connection', (socket) => {
         console.log(`Socket ${socket.id} Joined room ${roomName}`);
     });
 
-    socket.on('sendMessage', (room) => {
-        console.log
-        io.to(room).emit('newMessage', room);
+    socket.on('sendMessage', (room, message) => {
+        io.to(room).emit('newMessage', room, message);
     });
 
     socket.on('disconnect', () => {

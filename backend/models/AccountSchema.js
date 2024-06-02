@@ -17,6 +17,14 @@ const accountSchema = new mongoose.Schema({
         type: String,
         require: false,
         default: 'User'
+    },
+    rooms: {
+        type: [String],
+        default: ['Global']
+    },
+    friends: {
+        type: [String],
+        default: []
     }
 });
 

@@ -36,4 +36,16 @@ router.post('/', async (req, res) => {
     }
 });
 
+// Delete all messages
+router.delete('/', async (req, res) => {
+    try {
+        await messageSchema.deleteMany().then(() => {
+            console.log('should be cleared');
+        })
+        res.status(200);
+    } catch (err) {
+        res.json(err);
+    }
+});
+
 module.exports = router;

@@ -8,7 +8,7 @@ module.exports = (req, res, next) => {
         if (req.headers.authorization) {
             token = req.headers.authorization.split(' ')[1];
         } else {
-            //console.log('no header');
+            console.log('no header: ' + req.headers.authorization);
             return res.json({ errorMessage: "No Headers Attached" });
         }
 

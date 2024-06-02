@@ -1,13 +1,11 @@
 import { useState, useContext, useEffect } from "react";
 import axios from "axios";
-import io from "socket.io-client";
 
 import { UserContext } from "../context/userContext";
 import ChatBubble from "./ChatBubble";
 
 const serverURL = process.env.REACT_APP_BACKEND_URL;
 
-const socket = io(serverURL);
 
 function ChatWindow({ room }) {
     const userContext = useContext(UserContext);
@@ -19,24 +17,12 @@ function ChatWindow({ room }) {
         async function getChat() {
             axios.get(`${serverURL}/Messages/${room}`)
                 .then((res) => {
-                    console.log(res);
                     setChatMessages(res.data);
                 });
         }
         document.getElementById('messageInput').focus();
 
-        // Socket Listner
-        if (room) {
-            getChat();
-            socket.emit('joinRoom', room);
-            socket.on('newMessage', (inc) => {
-                getChat();
-
-                return () => {
-                    socket.disconnect();
-                }
-            });
-        }
+        if (room) getChat();
     }, [room]);
 
     // Send Message
@@ -57,7 +43,7 @@ function ChatWindow({ room }) {
                 alert(err);
             }
 
-            socket.emit('sendMessage', room);
+            //socket.emit('sendMessage', room, info);
             setMessage('');
         }
 
@@ -74,18 +60,16 @@ function ChatWindow({ room }) {
                     value={message}
                     className="inputBar"
                     id="messageInput"
-                />
-                <button
-                    onClick={onSend}
                     onKeyDown={(e) => {
-                        alert('3')
                         if (e.key === "Enter") onSend();
-                        alert('e')
-                    }}>
+                    }}
+                />
+                <button onClick={onSend}>
                     Send
                 </button>
             </div>
             <div className="chatWindow hPad8">
+                {room && <h2>{room}</h2>}
                 {room && chatMessages && chatMessages.map((i) => {
                     return < ChatBubble info={i} key={i._id} />
                 })}
