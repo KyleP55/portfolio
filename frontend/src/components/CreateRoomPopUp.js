@@ -22,7 +22,7 @@ function CreateRoomPopUp({ onCreate, onClose }) {
                 <div>
                     <input
                         type='radio'
-                        value="public"
+                        value={true}
                         name="visability"
                         checked={visability === 'public'}
                         onChange={onOptionChange}
@@ -31,7 +31,7 @@ function CreateRoomPopUp({ onCreate, onClose }) {
                 <div>
                     <input
                         type='radio'
-                        value="private"
+                        value={false}
                         name="visability"
                         checked={visability === 'private'}
                         onChange={onOptionChange}

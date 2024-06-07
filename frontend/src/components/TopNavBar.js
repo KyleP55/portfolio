@@ -18,18 +18,15 @@ function TopNavBar() {
     useEffect(() => {
         let token = Cookies.get('token');
         async function restoreSession() {
-
             try {
-                axios.get(`${serverURL}/authAccounts/context`, { headers: { Authorization: "bearer " + token } })
+                await axios.get(`${serverURL}/authAccounts/context`, { headers: { Authorization: "bearer " + token } })
                     .then((res) => {
-                        userContext.setUser(res.data._id, token, res.data.userName, res.data.email);
+                        let x = res.data;
+                        userContext.setUser(x._id, token, x.userName, x.email, x.rooms, x.friends);
                     });
-
-
             } catch (err) {
                 alert('Error Connected to Backend');
             }
-
         }
         if (token && !userContext.userName) restoreSession();
     }, []);

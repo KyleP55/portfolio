@@ -23,7 +23,8 @@ function LogInPopUp({ toggle }) {
 
             await axios.post(serverURL + '/accounts/login', info)
                 .then((res) => {
-                    userContext.setUser(res.data.id, res.data.token, res.data.userName);
+                    let x = res.data;
+                    userContext.setUser(x.id, x.token, x.userName, x.rooms, x.friends);
 
                     Cookies.set('token', res.data.token, { expires: 1 });
                 })

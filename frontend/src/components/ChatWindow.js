@@ -22,7 +22,7 @@ function ChatWindow({ room }) {
         }
         document.getElementById('messageInput').focus();
 
-        if (room) getChat();
+        if (userContext.id) getChat();
     }, [room]);
 
     // Send Message

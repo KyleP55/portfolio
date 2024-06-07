@@ -4,10 +4,11 @@ import axios from 'axios';
 import '../css/chatNav.css';
 
 import CreateRoomPopUp from "../components/CreateRoomPopUp.js";
+import Cookies from 'js-cookie';
 
 const serverURL = process.env.REACT_APP_BACKEND_URL;
 
-function ChatNav({ viewRoom }) {
+function ChatNav({ viewRoom, rooms, friends }) {
     const [popup, setPopup] = useState(false);
 
     // Clear Messages ** Delete Later **
@@ -28,21 +29,38 @@ function ChatNav({ viewRoom }) {
         alert("Creat room " + name + " " + visability)
     }
 
+    async function testFetch() {
+        // Get Rooms
+        let token = Cookies.get('token');
+        let roomsInfo = [];
+        await axios.get(`${serverURL}/rooms/list`, { message: "hi" }, { headers: { Authorization: "bearer " + token } })
+            .then((res) => {
+                let x = res.data;
+                let info = {
+                    name: x.name,
+                    id: x.id,
+                    visability: x.visability
+                }
+
+                roomsInfo.push(info);
+            });
+    }
+
     return (<>
         {popup && <CreateRoomPopUp onCreate={createRoom} onClose={togglePopup} />}
         <div className="col-md-2 col-lg-2 chatNavContainer">
-            <button onClick={viewRoom.bind(this, "Global")}>
-                Global Chat
-            </button>
-            <button onClick={viewRoom.bind(this, "Private Room")}>
-                Private Room
-            </button>
+            {rooms && rooms.map((room) => {
+                <button onClick={viewRoom.bind(this, room.id)} key={room.id}>
+                    {room.name}
+                </button>
+            })}
+
             <button onClick={togglePopup}>
                 Create Room
             </button>
             <p>List of Friends</p>
             <p>Add Friend Button</p>
-            <button onClick={clearDB}>
+            <button onClick={testFetch}>
                 Clear All Messages
             </button>
         </div>

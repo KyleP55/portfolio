@@ -3,17 +3,20 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const server = require('http').createServer(app);
+const cors = require('cors');
 
 
-const frontendUrl = process.env.FRONTEND_URL;
-const url = process.env.DATABASE_URL;
-const port = 5000;
+const frontendUrl = process.env.FRONTEND_URL || 'http://127.0.0.1:3000';
+const url = process.env.DATABASE_URL || 'mongodb://127.0.0.1/localChatApp';
+const port = process.env.PORT || 5000;
 
 const accountRouter = require("./routes/accountRoutes.js");
 const authCheck = require("./middleware/authCheck.js");
 const authAccountRouter = require("./routes/authAccountRoutes.js");
 const messageRouter = require("./routes/messageRoutes.js");
+const roomRouter = require("./routes/roomRoutes.js");
 
+// Socket Options
 const io = require('socket.io')(server, {
     cors: {
         origin: frontendUrl,
@@ -36,7 +39,7 @@ server.listen(port, () => {
 
 // IO Stuff
 io.on('connection', (socket) => {
-    console.log(`Socket ${socket.id} Connected`);
+    //console.log(`Socket ${socket.id} Connected`);
 
     socket.on('joinRoom', (roomName) => {
         socket.join(roomName);
@@ -48,20 +51,22 @@ io.on('connection', (socket) => {
     });
 
     socket.on('disconnect', () => {
-        console.log('Someone Disconnected');
+        //console.log('Someone Disconnected');
     });
 });
 
 // Middleware / Routes
 app.use(express.json());
-app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', frontendUrl);
-    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    next();
-});
+
+const corsOptions = {
+    origin: frontendUrl,
+    allowedHeaders: ['Access-Control-Allow-Headers', 'Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
+    preflightContinue: false
+}
+app.use(cors(corsOptions));
 
 app.use('/accounts', accountRouter);
-app.use('/messages', messageRouter);
 app.use(authCheck);
+app.use('/rooms', roomRouter);
+app.use('/messages', messageRouter);
 app.use('/authAccounts', authAccountRouter);

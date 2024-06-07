@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
 
 module.exports = (req, res, next) => {
-    //console.log('checking auth')
     try {
         let token = null;
 
@@ -9,21 +8,19 @@ module.exports = (req, res, next) => {
             token = req.headers.authorization.split(' ')[1];
         } else {
             console.log('no header: ' + req.headers.authorization);
-            return res.json({ errorMessage: "No Headers Attached" });
+            throw new Error('No Header/Token')
         }
 
         if (!token) {
             //console.log('invalid token');
-            return res.json({ errorMessage: "Invalid Token" });
+            throw new Error('Invalid Token')
         }
 
         const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-        req.userData = { userId: decodedToken.userId }
-
-        //console.log('auth completed');
+        req.userData = { id: decodedToken.id }
 
         next();
     } catch (err) {
-        return next(err);
+        return res.json({ message: err.message });
     }
 }

@@ -1,0 +1,9 @@
+//Create 
+POST http://localhost:5000/rooms/ 
+Content-Type: application/json
+
+{
+    "name": "My Private Room",
+    "public": false,
+    "password": null
+}

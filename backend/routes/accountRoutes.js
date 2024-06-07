@@ -4,6 +4,7 @@ const accountSchema = require('../models/AccountSchema.js');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
+const jwtSecret = process.env.JWT_SECRET || 'Q7BljLhFTh04xTR7F4xQCB3tsj7saogd';
 
 // Create Account
 router.post('/createAccount', async (req, res) => {
@@ -40,9 +41,8 @@ router.post('/createAccount', async (req, res) => {
 
 // Log In
 router.post('/login', async (req, res) => {
-    7
     const b = req.body;
-    const account = await accountSchema.findOne({ email: b.email }, { email: 1, password: 1, userName: 1, _id: 1 });
+    const account = await accountSchema.findOne({ email: b.email }, { email: 1, password: 1, userName: 1, _id: 1, rooms: 1, friends: 1 });
 
     if (account == undefined) return res.json({ message: "User not found" });
 
@@ -53,7 +53,7 @@ router.post('/login', async (req, res) => {
             let sig = { id: account._id, email: account.email, userName: account.userName };
             const accessToken = generateToken(sig);
 
-            sig = { id: account._id, email: account.email, userName: account.userName, token: accessToken };
+            sig = { id: account._id, email: account.email, userName: account.userName, token: accessToken, rooms: account.rooms, friends: account.friends };
 
             return res.status(200).json(sig);
         } else {
@@ -84,7 +84,7 @@ router.post('/checkUserName', async (req, res) => {
 
 //Generate Token
 function generateToken(sig) {
-    return jwt.sign(sig, process.env.JWT_SECRET, { expiresIn: '1h' });
+    return jwt.sign(sig, jwtSecret, { expiresIn: '1h' });
 }
 
 module.exports = router;

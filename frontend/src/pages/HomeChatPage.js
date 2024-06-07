@@ -16,17 +16,19 @@ function HomeChatPage() {
     const [currentRoom, setCurrentRoom] = useState('Global');
 
     useEffect(() => {
-        async function getNavStuff() {
-            console.log(userContext.token)
+        // async function getNavStuff() {
+        //     console.log(userContext.token)
+        //     alert(userContext.token)
+        //     axios.get(`${serverURL}/authAccounts/roomsfriends`, { headers: { authorization: "bearer " + userContext.token } })
+        //         .then((res) => {
+        //             console.log('should be next line')
+        //             console.log(res);
+        //         });
+        // }
+        setRooms([...userContext.rooms]);
+        setFriends([...userContext.friends]);
 
-            axios.get(`${serverURL}/authAccounts/roomsfriends`, { headers: { Authorization: "bearer " + userContext.token } })
-                .then((res) => {
-                    console.log('should be next line')
-                    console.log(res);
-                });
-        }
-
-        if (userContext.id) getNavStuff();
+        //if (userContext.id) getNavStuff();
         // Socket Listner
         if (currentRoom && userContext.userName) {
 
@@ -60,7 +62,7 @@ function HomeChatPage() {
 
     return (<div className="container-fluid">
         <div className="row maxVH">
-            <ChatNav viewRoom={changeRoom} rooms={rooms} onCreate={createRoom} />
+            <ChatNav viewRoom={changeRoom} rooms={rooms} onCreate={createRoom} friends={friends} />
             <ChatWindow room={currentRoom} />
         </div>
     </div>);
