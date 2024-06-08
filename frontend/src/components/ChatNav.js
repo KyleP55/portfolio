@@ -1,14 +1,15 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import axios from 'axios';
 
 import '../css/chatNav.css';
 
 import CreateRoomPopUp from "../components/CreateRoomPopUp.js";
-import Cookies from 'js-cookie';
+import { UserContext } from '../context/userContext.js';
 
 const serverURL = process.env.REACT_APP_BACKEND_URL;
 
-function ChatNav({ viewRoom, rooms, friends }) {
+function ChatNav({ viewRoom, rooms }) {
+    const userContext = useContext(UserContext);
     const [popup, setPopup] = useState(false);
 
     // Clear Messages ** Delete Later **
@@ -30,32 +31,19 @@ function ChatNav({ viewRoom, rooms, friends }) {
     }
 
     async function testFetch() {
-        // Get Rooms
-        let token = Cookies.get('token');
-        let roomsInfo = [];
-        await axios.get(`${serverURL}/rooms/list`, { message: "hi" }, { headers: { Authorization: "bearer " + token } })
-            .then((res) => {
-                let x = res.data;
-                let info = {
-                    name: x.name,
-                    id: x.id,
-                    visability: x.visability
-                }
-
-                roomsInfo.push(info);
-            });
+        console.log(userContext.rooms)
     }
 
     return (<>
         {popup && <CreateRoomPopUp onCreate={createRoom} onClose={togglePopup} />}
         <div className="col-md-2 col-lg-2 chatNavContainer">
-            {rooms && rooms.map((room) => {
-                <button onClick={viewRoom.bind(this, room.id)} key={room.id}>
+            {userContext.rooms && userContext.rooms.map((room) => {
+                return <button onClick={viewRoom.bind(this, room)} key={room._id} className='chatNavButton'>
                     {room.name}
                 </button>
             })}
 
-            <button onClick={togglePopup}>
+            <button onClick={togglePopup} className="chatNavButton">
                 Create Room
             </button>
             <p>List of Friends</p>

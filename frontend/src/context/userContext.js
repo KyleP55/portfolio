@@ -21,42 +21,36 @@ function UserContextProvider({ children }) {
     const [rooms, setRoomsState] = useState([]);
     const [friends, setFriendsState] = useState([]);
 
-    async function setUser(_id, _token, _userName, _rooms, _friends) {
+    async function setUser(_id, _token, _userName, _email, _rooms, _friends) {
         setId(_id);
         setToken(_token);
         setUserName(_userName);
 
         // Get Rooms
-        let roomsInfo = [];
-        // await axios.get(`${serverURL}/rooms/list`, { message: "hi" }, { headers: { Authorization: "bearer " + _token } })
-        //     .then((res) => {
-        //         let x = res.data;
-        //         let info = {
-        //             name: x.name,
-        //             id: x.id,
-        //             visability: x.visability
-        //         }
+        try {
+            await axios.get(`${serverURL}/rooms/list`, {
+                headers: { Authorization: "bearer " + _token },
+                params: { rooms: _rooms }
+            }).then((res) => {
+                setRoomsState(res.data);
+            });
 
-        //         roomsInfo.push(info);
-        //     });
+            // await axios.get('rooms/list', _rooms, header)
+            //     .then((res) => {
+            //         let x = res.data;
+            //         let info = {
+            //             name: x.name,
+            //             id: x.id,
+            //             visability: x.visability
+            //         }
 
-        setRoomsState([]);
+            //         roomsInfo.push(info);
+            //     });
 
-        let friendsInfo = []
-        console.log('friends', _friends)
-        // await axios.get('rooms/list', _rooms)
-        //     .then((res) => {
-        //         let x = res.data;
-        //         let info = {
-        //             name: x.name,
-        //             id: x.id,
-        //             visability: x.visability
-        //         }
-
-        //         roomsInfo.push(info);
-        //     });
-
-        setFriendsState([]);
+            // setFriendsState([]);
+        } catch (err) {
+            console.log(err.message)
+        }
     }
 
     function setRooms(rooms) {

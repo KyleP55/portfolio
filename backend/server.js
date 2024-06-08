@@ -41,13 +41,14 @@ server.listen(port, () => {
 io.on('connection', (socket) => {
     //console.log(`Socket ${socket.id} Connected`);
 
-    socket.on('joinRoom', (roomName) => {
-        socket.join(roomName);
-        console.log(`Socket ${socket.id} Joined room ${roomName}`);
+    socket.on('joinRoom', (roomId) => {
+        socket.join(roomId);
+        console.log(`Joined ${roomId}`);
     });
 
-    socket.on('sendMessage', (room, message) => {
-        io.to(room).emit('newMessage', room, message);
+    socket.on('sendMessage', (roomId, message) => {
+        io.to(roomId).emit('newMessage', roomId, message);
+        console.log('sent', roomId)
     });
 
     socket.on('disconnect', () => {
@@ -66,7 +67,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 app.use('/accounts', accountRouter);
+app.use('/messages', messageRouter);
 app.use(authCheck);
 app.use('/rooms', roomRouter);
-app.use('/messages', messageRouter);
 app.use('/authAccounts', authAccountRouter);

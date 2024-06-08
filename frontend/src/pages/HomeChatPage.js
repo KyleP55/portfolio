@@ -11,36 +11,26 @@ const socket = io(serverURL);
 
 function HomeChatPage() {
     const userContext = useContext(UserContext);
-    const [rooms, setRooms] = useState();
-    const [friends, setFriends] = useState();
-    const [currentRoom, setCurrentRoom] = useState('Global');
+    const [currentRoom, setCurrentRoom] = useState();
+    const [newChat, setNewChat] = useState();
 
     useEffect(() => {
-        // async function getNavStuff() {
-        //     console.log(userContext.token)
-        //     alert(userContext.token)
-        //     axios.get(`${serverURL}/authAccounts/roomsfriends`, { headers: { authorization: "bearer " + userContext.token } })
-        //         .then((res) => {
-        //             console.log('should be next line')
-        //             console.log(res);
-        //         });
-        // }
-        setRooms([...userContext.rooms]);
-        setFriends([...userContext.friends]);
-
-        //if (userContext.id) getNavStuff();
         // Socket Listner
-        if (currentRoom && userContext.userName) {
+        if (userContext.rooms) {
+            userContext.rooms.forEach((room) => {
+                socket.emit('joinRoom', room._id);
+            });
+        }
+    }, [userContext.rooms]);
 
-            //getChat();
-            //socket.emit('joinRoom', room);
-
+    useEffect(() => {
+        if (currentRoom) {
+            console.log('id', currentRoom._id)
             socket.on('newMessage', (incRoom, incMessage) => {
-                alert('got message ' + incRoom)
-                if (incRoom == currentRoom) {
-                    let newMessage = { ...incMessage, id: new Date().toString() }
-                    console.log(incMessage)
-                    //setChatMessages([...chatMessages, newMessage]);
+                if (incRoom == currentRoom._id) {
+                    let newMessage = { ...incMessage, _id: new Date().toString() }
+
+                    setNewChat(newMessage);
                 }
 
                 return () => {
@@ -48,7 +38,7 @@ function HomeChatPage() {
                 }
             });
         }
-    }, [userContext.id]);
+    }, [currentRoom]);
 
     // Change current room
     function changeRoom(newRoom) {
@@ -60,10 +50,26 @@ function HomeChatPage() {
         console.log('to do')
     }
 
+    // Send Socket
+    function onSendHandler(info) {
+        let x = currentRoom._id
+        console.log('current', x)
+        socket.emit('sendMessage', x, info);
+    }
+
     return (<div className="container-fluid">
         <div className="row maxVH">
-            <ChatNav viewRoom={changeRoom} rooms={rooms} onCreate={createRoom} friends={friends} />
-            <ChatWindow room={currentRoom} />
+            <ChatNav
+                viewRoom={changeRoom}
+                rooms={userContext.rooms}
+                onCreate={createRoom}
+                friends={userContext.friends}
+            />
+            <ChatWindow
+                room={currentRoom}
+                onSend={onSendHandler}
+                update={newChat}
+            />
         </div>
     </div>);
 }

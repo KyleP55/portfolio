@@ -3,7 +3,8 @@ POST http://localhost:5000/rooms/
 Content-Type: application/json
 
 {
-    "name": "My Private Room",
-    "public": false,
-    "password": null
+    "name": "Global",
+    "public": true,
+    "password": null,
+    "owner": null
 }

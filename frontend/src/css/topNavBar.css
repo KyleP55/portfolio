@@ -29,3 +29,20 @@ a {
     color: #000;
     cursor: pointer;
 }
+
+.logo{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-left: 16px;
+}
+
+.logoIcon {
+    margin-right: 16px;
+}
+
+.nameText {
+    font-weight: bold;
+    font-size: 32px;
+}

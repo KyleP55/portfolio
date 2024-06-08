@@ -7,6 +7,7 @@ import "../css/topNavBar.css";
 
 import { UserContext } from "../context/userContext";
 import LogInPopUp from "./LogInPopUp.js";
+import logo from '../images/chatIcon.png';
 
 const serverURL = process.env.REACT_APP_BACKEND_URL;
 
@@ -42,7 +43,8 @@ function TopNavBar() {
 
     // Sign Out
     function logOut() {
-
+        Cookies.remove('token');
+        window.location.reload();
     }
 
     const unauthed = <>
@@ -68,7 +70,8 @@ function TopNavBar() {
     return (<>
         <div className="header">
             <div className="logo">
-                <p>** logo **</p>
+                <img src={logo} alt="Chat Icon" height="44" className="logoIcon" />
+                <h3 className="nameText">Chatty App!</h3>
             </div>
             <div className="searchBar">
 

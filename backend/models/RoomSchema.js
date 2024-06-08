@@ -12,6 +12,10 @@ const roomSchema = new mongoose.Schema({
     password: {
         type: String,
         required: false
+    },
+    owner: {
+        type: String,
+        required: false
     }
 });
 

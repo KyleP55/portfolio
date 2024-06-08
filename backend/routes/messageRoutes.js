@@ -6,7 +6,6 @@ const messageSchema = require('../models/MessageSchema.js');
 router.get('/:room/', async (req, res) => {
     try {
         const room = req.params.room;
-
         const messages = await messageSchema.find({ room: room });
 
         res.status(200).json(messages);

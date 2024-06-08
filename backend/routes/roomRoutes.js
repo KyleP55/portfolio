@@ -8,7 +8,8 @@ router.post('/', async (req, res) => {
         const newRoom = new roomSchema({
             name: req.body.name,
             public: req.body.public,
-            password: req.body.password
+            password: req.body.password,
+            owner: req.body.owner
         });
 
         await newRoom.save()
@@ -16,22 +17,26 @@ router.post('/', async (req, res) => {
                 return res.json(result);
             })
     } catch (err) {
-        console.log('Error adding room.');
-        console.log(err)
         return res.json({ message: "Error Adding Room" });
     }
 });
 
 // Get Rooms List
 router.get('/list', async (req, res) => {
-    console.log('in list')
     try {
-        roomSchema.find({ _id: req.body.id })
-            .then((x) => {
-                return res.json(x);
+        let rooms = req.query.rooms;
+
+        if (rooms) {
+            const list = await roomSchema.find({
+                _id: { $in: rooms }
             });
+
+            return res.json(list);
+        } else {
+            throw 'List not found'
+        }
     } catch (err) {
-        return res.json(x);
+        return res.json(err.message);
     }
 });
 

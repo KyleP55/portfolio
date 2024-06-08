@@ -3,10 +3,10 @@ POST http://localhost:5000/Messages/
 Content-Type: application/json
 
 {
-    "nameSpace": "Global", 
-    "message": "Anon 1 Replying to My Message", 
+    "room": "66632d638777e339d560e413", 
+    "message": "A follow up message", 
     "sender": "Anon 1", 
-    "date": "Mon May 27 2024 14:18:24 GMT-0400 (Eastern Daylight Saving Time)"
+    "date": "Mon May 28 2024 14:18:24 GMT-0400 (Eastern Daylight Saving Time)"
 }
 
 ###

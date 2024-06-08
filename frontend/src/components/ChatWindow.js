@@ -7,7 +7,7 @@ import ChatBubble from "./ChatBubble";
 const serverURL = process.env.REACT_APP_BACKEND_URL;
 
 
-function ChatWindow({ room }) {
+function ChatWindow({ room, onSend, update }) {
     const userContext = useContext(UserContext);
     const [message, setMessage] = useState('');
     const [chatMessages, setChatMessages] = useState();
@@ -15,23 +15,24 @@ function ChatWindow({ room }) {
     // Get Messages on Load
     useEffect(() => {
         async function getChat() {
-            axios.get(`${serverURL}/Messages/${room}`)
-                .then((res) => {
-                    setChatMessages(res.data);
-                });
+            axios.get(`${serverURL}/Messages/${room._id}`, {
+                headers: { Authorization: "bearer " + userContext.token }
+            }).then((res) => {
+                setChatMessages(res.data);
+            });
         }
         document.getElementById('messageInput').focus();
 
-        if (userContext.id) getChat();
+        if (userContext.id && room) getChat();
     }, [room]);
 
     // Send Message
-    async function onSend() {
+    async function onSendHandler() {
         let date = new Date();
 
         if (message !== '') {
             const info = {
-                room: room,
+                room: room._id,
                 message: message,
                 sender: userContext.userName,
                 date: date.toString()
@@ -43,12 +44,25 @@ function ChatWindow({ room }) {
                 alert(err);
             }
 
-            //socket.emit('sendMessage', room, info);
+            onSend(info);
             setMessage('');
         }
 
         document.getElementById('messageInput').focus();
     }
+
+    // Update Chat
+    useEffect(() => {
+        if (update) {
+            setChatMessages([...chatMessages, update]);
+        }
+    }, [update]);
+
+    // Scroll to Bottom
+    useEffect(() => {
+        const element = document.getElementById("messageScroll");
+        element.scrollTop = element.scrollHeight;
+    }, [chatMessages]);
 
     return (<>
         <div className="col-md-10 col-lg-10 p-0 maxVH chatContainer">
@@ -60,16 +74,17 @@ function ChatWindow({ room }) {
                     value={message}
                     className="inputBar"
                     id="messageInput"
+                    autoComplete="off"
                     onKeyDown={(e) => {
-                        if (e.key === "Enter") onSend();
+                        if (e.key === "Enter") onSendHandler();
                     }}
                 />
-                <button onClick={onSend}>
+                <button onClick={onSendHandler}>
                     Send
                 </button>
             </div>
-            <div className="chatWindow hPad8">
-                {room && <h2>{room}</h2>}
+            <div className="chatWindow hPad8" id="messageScroll">
+                {room && <h2>{room.name}</h2>}
                 {room && chatMessages && chatMessages.map((i) => {
                     return < ChatBubble info={i} key={i._id} />
                 })}
