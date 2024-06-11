@@ -43,12 +43,12 @@ io.on('connection', (socket) => {
 
     socket.on('joinRoom', (roomId) => {
         socket.join(roomId);
-        console.log(`Joined ${roomId}`);
+        //console.log(`Joined ${roomId}`);
     });
 
     socket.on('sendMessage', (roomId, message) => {
         io.to(roomId).emit('newMessage', roomId, message);
-        console.log('sent', roomId)
+        //console.log('sent', roomId)
     });
 
     socket.on('disconnect', () => {

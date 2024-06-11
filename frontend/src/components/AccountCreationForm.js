@@ -45,7 +45,7 @@ function AccountCreationForm({ created }) {
 
         try {
             await axios.post(serverURL + '/accounts/createAccount', info).then((res) => {
-                userContext.setUser(res.data.id, res.data.token, res.data.userName);
+                userContext.setUser(res.data.id, res.data.token, res.data.userName, email, ['66632d638777e339d560e413'], []);
                 created();
             });
         } catch (err) {

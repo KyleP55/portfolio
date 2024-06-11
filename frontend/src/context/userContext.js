@@ -35,19 +35,13 @@ function UserContextProvider({ children }) {
                 setRoomsState(res.data);
             });
 
-            // await axios.get('rooms/list', _rooms, header)
-            //     .then((res) => {
-            //         let x = res.data;
-            //         let info = {
-            //             name: x.name,
-            //             id: x.id,
-            //             visability: x.visability
-            //         }
-
-            //         roomsInfo.push(info);
-            //     });
-
-            // setFriendsState([]);
+            await axios.get(`${serverURL}/authAccounts/friends`, {
+                headers: { Authorization: "bearer " + _token },
+                params: { id: _id }
+            }).then((res) => {
+                console.log(res.data)
+                setFriendsState(["test"]);
+            });
         } catch (err) {
             console.log(err.message)
         }

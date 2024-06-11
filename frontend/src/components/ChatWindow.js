@@ -64,8 +64,11 @@ function ChatWindow({ room, onSend, update }) {
         element.scrollTop = element.scrollHeight;
     }, [chatMessages]);
 
+    // Add Friend Popup
+    const [popup, setPopup] = useState(false);
+
     return (<>
-        <div className="col-md-10 col-lg-10 p-0 maxVH chatContainer">
+        <div className="col-sm-12 col-md-8 col-lg-10 p-0 maxVH chatContainer">
             <div className="messageBox">
                 <input
                     type="text"
@@ -86,10 +89,13 @@ function ChatWindow({ room, onSend, update }) {
             <div className="chatWindow hPad8" id="messageScroll">
                 {room && <h2>{room.name}</h2>}
                 {room && chatMessages && chatMessages.map((i) => {
-                    return < ChatBubble info={i} key={i._id} />
+                    return < ChatBubble
+                        info={i}
+                        key={i._id}
+                    />
                 })}
-                {!userContext.userName && <h1>Log In!</h1>}
-                {!room && userContext.userName && <h1>Select a Room to Join</h1>}
+                {!userContext.userName && <h1 className="centerTitle">Log In!</h1>}
+                {!room && userContext.userName && <h1 className="centerTitle">Select a Room to Join</h1>}
             </div>
         </div>
     </>)

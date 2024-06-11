@@ -38,6 +38,43 @@ router.get('/roomsfriends', async (req, res) => {
     }
 });
 
+// Add Friend
+router.post('/friends/', async (req, res) => {
+    try {
+        await accountSchema.findByIdAndUpdate(
+            { _id: req.body.id },
+            { $push: { friends: req.body.name } }
+        ).then((r) => {
+            return res.status(200);
+        })
+
+    } catch (err) {
+        return res.json({ message: err.message });
+    }
+});
+
+// Get Friends List
+router.get('/friends/', async (req, res) => {
+    try {
+        await accountSchema.find(
+            { _id: req.query.id },
+            { friends: 1 }
+        ).then((r) => {
+            console.log(r[0].friends)
+            let friends = accountSchema.find(
+                { name: { $in: r[0].friends } },
+                { _id: 1, name: 1 }
+            )
+
+            console.log(friends)
+
+            return res.json({ data: r[0].friends });
+        })
+    } catch (err) {
+        return res.json({ message: err.message });
+    }
+});
+
 //Generate Token
 function generateToken(sig) {
     return jwt.sign(sig, jwtSecret, { expiresIn: '60s' });

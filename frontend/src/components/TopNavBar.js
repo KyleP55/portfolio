@@ -8,6 +8,7 @@ import "../css/topNavBar.css";
 import { UserContext } from "../context/userContext";
 import LogInPopUp from "./LogInPopUp.js";
 import logo from '../images/chatIcon.png';
+import menuIcon from '../images/menuIcon.png';
 
 const serverURL = process.env.REACT_APP_BACKEND_URL;
 
@@ -22,6 +23,7 @@ function TopNavBar() {
             try {
                 await axios.get(`${serverURL}/authAccounts/context`, { headers: { Authorization: "bearer " + token } })
                     .then((res) => {
+                        if (res.data.message === "jwt expired") return logOut();
                         let x = res.data;
                         userContext.setUser(x._id, token, x.userName, x.email, x.rooms, x.friends);
                     });
@@ -45,6 +47,11 @@ function TopNavBar() {
     function logOut() {
         Cookies.remove('token');
         window.location.reload();
+    }
+
+    // Toggle Mobile Nav
+    function onMobileNavClick() {
+        document.getElementById('topNavMenu').style.height = "200px"
     }
 
     const unauthed = <>
@@ -73,13 +80,25 @@ function TopNavBar() {
                 <img src={logo} alt="Chat Icon" height="44" className="logoIcon" />
                 <h3 className="nameText">Chatty App!</h3>
             </div>
-            <div className="searchBar">
 
-            </div>
-            <div className="accountBars">
+            <div className="accountBars navLinks">
                 {!userContext.id && unauthed}
                 {userContext.id && authed}
             </div>
+        </div>
+        <div className="navHeader">
+            <div className="logo">
+                <img src={logo} alt="Chat Icon" height="44" className="logoIcon" />
+            </div>
+            <h3 className="nameText">Chatty App!</h3>
+            <div id="menuIcon" onClick={onMobileNavClick}>
+                <img src={menuIcon} alt="Menu Icon" height="38" className="menuIcon" />
+            </div>
+        </div>
+        <div className="topNavMenu" id="topNavMenu">
+            <a>test</a>
+            <a>test2</a>
+            <a>test3</a>
         </div>
         <Outlet />
     </>)

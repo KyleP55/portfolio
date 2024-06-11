@@ -20,7 +20,7 @@ const accountSchema = new mongoose.Schema({
     },
     rooms: {
         type: [String],
-        default: ['Global']
+        default: ['66632d638777e339d560e413']
     },
     friends: {
         type: [String],
