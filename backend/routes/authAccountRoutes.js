@@ -60,15 +60,12 @@ router.get('/friends/', async (req, res) => {
             { _id: req.query.id },
             { friends: 1 }
         ).then((r) => {
-            console.log(r[0].friends)
-            let friends = accountSchema.find(
-                { name: { $in: r[0].friends } },
-                { _id: 1, name: 1 }
-            )
-
-            console.log(friends)
-
-            return res.json({ data: r[0].friends });
+            accountSchema.find(
+                { userName: { $in: r[0].friends } },
+                { _id: 1, userName: 1 }
+            ).then((r2) => {
+                return res.json(r2);
+            });
         })
     } catch (err) {
         return res.json({ message: err.message });

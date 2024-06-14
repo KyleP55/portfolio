@@ -58,7 +58,9 @@
 
 .inputBar {
     flex: 1;
+    margin: 2px 0px;
     margin-right: 8px;
+    height: 48px;
 }
 
 .centerTitle {
@@ -67,16 +69,4 @@
     margin-top: 50%;
     font-size: 38;
     font-weight: bold;
-}
-
-@media only screen and (max-width: 660px) {
-    .sideNav {
-        position: fixed;
-        z-index: 1;
-        overflow-x: hidden;
-        transition: 0.5s;
-        top: 0;
-        right: 0;
-        display: none;
-    }
 }

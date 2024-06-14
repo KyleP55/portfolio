@@ -13,10 +13,15 @@ function ChatBubble({ info }) {
         let answer = window.confirm("Add user " + name + " to friends?");
         if (answer) {
             try {
-                axios.post(
+                await axios.post(
                     `${serverURL}/authAccounts/friends/`,
                     { id: userContext.id, name: name },
-                    { headers: { Authorization: 'bearer ' + userContext.token } });
+                    { headers: { Authorization: 'bearer ' + userContext.token } }
+                ).then((res) => {
+                    if (res.ok) {
+
+                    }
+                })
             } catch (err) {
                 console.log(err.message)
             }

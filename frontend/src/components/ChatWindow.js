@@ -95,7 +95,7 @@ function ChatWindow({ room, onSend, update }) {
                     />
                 })}
                 {!userContext.userName && <h1 className="centerTitle">Log In!</h1>}
-                {!room && userContext.userName && <h1 className="centerTitle">Select a Room to Join</h1>}
+                {!room && userContext.userName && <h1 className="centerTitle">Select a Conversation!</h1>}
             </div>
         </div>
     </>)

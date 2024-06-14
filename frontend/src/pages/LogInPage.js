@@ -1,5 +1,6 @@
-import axios from 'axios';
-import { useContext, useState } from 'react';
+import { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom"
+import axios from "axios";
 import Cookies from 'js-cookie';
 
 import '../css/form.css'
@@ -7,8 +8,9 @@ import '../css/form.css'
 import { UserContext } from '../context/userContext';
 const serverURL = process.env.REACT_APP_BACKEND_URL;
 
-function LogInPopUp({ toggle }) {
+function LogInPage() {
     const userContext = useContext(UserContext);
+    const nav = useNavigate();
     const [email, setEmail] = useState('');
     const [pass, setPass] = useState('');
 
@@ -26,16 +28,17 @@ function LogInPopUp({ toggle }) {
                     let x = res.data;
                     userContext.setUser(x.id, x.token, x.userName, x.email, x.rooms, x.friends);
 
-                    Cookies.set('token', res.data.token, { expires: 1 });
+                    Cookies.set('token', res.data.token, { expires: 7 });
+                    nav("/home")
                 })
         } catch (err) {
-            alert(err.message)
+            alert(err.message);
         }
     }
 
     return (<>
-        <div className="formPopUp">
-            <form className="popUpBorder">
+        <div className="formContainer">
+            <form>
                 <h1>Login</h1><br />
 
                 <label><b>Email</b></label>
@@ -55,12 +58,12 @@ function LogInPopUp({ toggle }) {
                 />
 
                 <div className="formButtonContainer">
-                    <button type="button" className="button" onClick={onSubmit}>Login</button>
-                    <button type="button" className="button cancel" onClick={toggle}>Close</button>
+                    <button type="button" className="chatNavButton" onClick={onSubmit}>Login</button>
                 </div>
             </form>
         </div>
     </>);
+
 }
 
-export default LogInPopUp;
+export default LogInPage;

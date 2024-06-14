@@ -39,8 +39,7 @@ function UserContextProvider({ children }) {
                 headers: { Authorization: "bearer " + _token },
                 params: { id: _id }
             }).then((res) => {
-                console.log(res.data)
-                setFriendsState(["test"]);
+                setFriendsState([...res.data]);
             });
         } catch (err) {
             console.log(err.message)

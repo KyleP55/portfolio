@@ -6,6 +6,8 @@ import '../css/chatNav.css';
 import CreateRoomPopUp from "../components/CreateRoomPopUp.js";
 import { UserContext } from '../context/userContext.js';
 
+import menuIcon from '../images/menuIcon.png';
+
 const serverURL = process.env.REACT_APP_BACKEND_URL;
 
 function ChatNav({ viewRoom, rooms }) {
@@ -31,6 +33,14 @@ function ChatNav({ viewRoom, rooms }) {
     }
 
     // Toggle Mobile Nav
+    function toggleMobileNav() {
+
+    }
+
+    // Message Friend
+    function friendMessage(friendID) {
+
+    }
 
     async function testFetch() {
         console.log(userContext.rooms)
@@ -54,8 +64,8 @@ function ChatNav({ viewRoom, rooms }) {
             <p className="navTitle">Your Friends</p>
             <div className="roomsDiv">
                 {userContext.friends && userContext.friends.map((friend) => {
-                    return <button onClick={console.log('friend')} key={friend._id} className='chatNavButton'>
-                        {friend.name}
+                    return <button onClick={friendMessage.bind(this, friend._id)} key={friend._id} className='chatNavButton'>
+                        {friend.userName}
                     </button>
                 })}
             </div>
@@ -66,6 +76,9 @@ function ChatNav({ viewRoom, rooms }) {
             <button onClick={testFetch}>
                 Clear All Messages
             </button>
+        </div>
+        <div className="mobileChatNavButton">
+            <img src={menuIcon} width="32px" />
         </div>
     </>)
 }

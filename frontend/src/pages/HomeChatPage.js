@@ -27,7 +27,7 @@ function HomeChatPage() {
         if (currentRoom) {
             console.log('id', currentRoom._id)
             socket.on('newMessage', (incRoom, incMessage) => {
-                if (incRoom == currentRoom._id) {
+                if (incRoom === currentRoom._id) {
                     let newMessage = { ...incMessage, _id: new Date().toString() }
 
                     setNewChat(newMessage);
@@ -46,8 +46,20 @@ function HomeChatPage() {
     }
 
     // Create Room
-    async function createRoom() {
-        console.log('to do')
+    async function createRoom(info) {
+        try {
+            let token = { headers: { Authentication: 'bearer: ' + userContext.token } }
+
+            await axios.post(
+                `${serverURL}/rooms/`,
+                info,
+                token
+            ).then((res) => {
+                console.log(res);
+            })
+        } catch (err) {
+            console.log(err.message)
+        }
     }
 
     // Send Socket

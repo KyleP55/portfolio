@@ -48,7 +48,9 @@ router.post('/login', async (req, res) => {
 
     //Check password
     try {
-        if (bcrypt.compare(b.password, account.password)) {
+        const verified = await bcrypt.compare(b.password, account.password)
+
+        if (verified) {
             //Create JWT
             let sig = { id: account._id, email: account.email, userName: account.userName };
             const accessToken = generateToken(sig);
@@ -57,7 +59,7 @@ router.post('/login', async (req, res) => {
 
             return res.status(200).json(sig);
         } else {
-            return res.json({ message: "Email or Password Incorrect" });
+            return res.status(401).json({ message: "Email or Password Incorrect" });
         }
     } catch (err) {
         return res.status(404).json({ message: err.message });

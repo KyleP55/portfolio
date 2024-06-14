@@ -15,6 +15,7 @@ const authCheck = require("./middleware/authCheck.js");
 const authAccountRouter = require("./routes/authAccountRoutes.js");
 const messageRouter = require("./routes/messageRoutes.js");
 const roomRouter = require("./routes/roomRoutes.js");
+const notificationRouter = require("./routes/notificationRoutes.js");
 
 // Socket Options
 const io = require('socket.io')(server, {
@@ -67,7 +68,8 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 app.use('/accounts', accountRouter);
-app.use('/messages', messageRouter);
 app.use(authCheck);
+app.use('/messages', messageRouter);
 app.use('/rooms', roomRouter);
 app.use('/authAccounts', authAccountRouter);
+app.use('/notifications', notificationRouter);
