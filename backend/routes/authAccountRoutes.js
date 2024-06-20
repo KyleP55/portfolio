@@ -24,13 +24,11 @@ router.get('/context', async (req, res) => {
 
 // Get Rooms
 router.get('/roomsfriends', async (req, res) => {
-    console.log('asdasdasd')
     try {
         const id = req.userData.id;
 
         await accountSchema.findOne({ _id: id }, { rooms: 1, friends: 1 })
             .then((res) => {
-                console.log(res)
                 res.json(res);
             });
     } catch (err) {

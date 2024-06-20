@@ -54,6 +54,20 @@ a {
     display: none;
 }
 
+.notificationNumber {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    background-color: red;
+    color: #fff;
+    right: 12px;
+    top: 30px;
+    border-radius: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 @media only screen and (max-width: 660px) {
     .navHeader {
         display: flex;

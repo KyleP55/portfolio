@@ -7,7 +7,7 @@ import ChatBubble from "./ChatBubble";
 const serverURL = process.env.REACT_APP_BACKEND_URL;
 
 
-function ChatWindow({ room, onSend, update }) {
+function ChatWindow({ room, onSend, update, sendFriendRequest }) {
     const userContext = useContext(UserContext);
     const [message, setMessage] = useState('');
     const [chatMessages, setChatMessages] = useState();
@@ -39,7 +39,15 @@ function ChatWindow({ room, onSend, update }) {
             }
 
             try {
-                await axios.post(`${serverURL}/Messages/`, info);
+                await axios.post(
+                    `${serverURL}/Messages/`,
+                    info,
+                    {
+                        headers: {
+                            Authorization: "bearer " + userContext.token
+                        }
+                    }
+                );
             } catch (err) {
                 alert(err);
             }
@@ -63,9 +71,6 @@ function ChatWindow({ room, onSend, update }) {
         const element = document.getElementById("messageScroll");
         element.scrollTop = element.scrollHeight;
     }, [chatMessages]);
-
-    // Add Friend Popup
-    const [popup, setPopup] = useState(false);
 
     return (<>
         <div className="col-sm-12 col-md-8 col-lg-10 p-0 maxVH chatContainer">
@@ -92,6 +97,7 @@ function ChatWindow({ room, onSend, update }) {
                     return < ChatBubble
                         info={i}
                         key={i._id}
+                        sendFriendRequest={sendFriendRequest}
                     />
                 })}
                 {!userContext.userName && <h1 className="centerTitle">Log In!</h1>}

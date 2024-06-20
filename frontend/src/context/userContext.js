@@ -32,7 +32,8 @@ function UserContextProvider({ children }) {
                 headers: { Authorization: "bearer " + _token },
                 params: { rooms: _rooms }
             }).then((res) => {
-                setRoomsState(res.data);
+                console.log('dataadadad ', res.data)
+                setRoomsState([...res.data]);
             });
 
             await axios.get(`${serverURL}/authAccounts/friends`, {

@@ -44,7 +44,7 @@ router.post('/login', async (req, res) => {
     const b = req.body;
     const account = await accountSchema.findOne({ email: b.email }, { email: 1, password: 1, userName: 1, _id: 1, rooms: 1, friends: 1 });
 
-    if (account == undefined) return res.json({ message: "User not found" });
+    if (account == undefined) return res.json({ message: "Email or Password Incorrect" });
 
     //Check password
     try {
@@ -59,10 +59,10 @@ router.post('/login', async (req, res) => {
 
             return res.status(200).json(sig);
         } else {
-            return res.status(401).json({ message: "Email or Password Incorrect" });
+            return res.json({ message: "Email or Password Incorrect" });
         }
     } catch (err) {
-        return res.status(404).json({ message: err.message });
+        return res.json({ message: err.message });
     }
 });
 

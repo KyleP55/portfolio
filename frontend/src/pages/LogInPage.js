@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from 'js-cookie';
 
@@ -25,6 +25,7 @@ function LogInPage() {
 
             await axios.post(serverURL + '/accounts/login', info)
                 .then((res) => {
+                    if (res.data.message) return alert('Error: ' + res.data.message)
                     let x = res.data;
                     userContext.setUser(x.id, x.token, x.userName, x.email, x.rooms, x.friends);
 

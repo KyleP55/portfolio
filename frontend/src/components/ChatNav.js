@@ -10,7 +10,7 @@ import menuIcon from '../images/menuIcon.png';
 
 const serverURL = process.env.REACT_APP_BACKEND_URL;
 
-function ChatNav({ viewRoom, rooms }) {
+function ChatNav({ viewRoom, rooms, socketTest }) {
     const userContext = useContext(UserContext);
     const [popup, setPopup] = useState(false);
 
@@ -51,6 +51,7 @@ function ChatNav({ viewRoom, rooms }) {
         <div className="col-md-4 col-lg-2 sideNav chatNavContainer">
             <p className="navTitle">Your Rooms</p>
             <div className="roomsDiv">
+
                 {userContext.rooms && userContext.rooms.map((room) => {
                     return <button onClick={viewRoom.bind(this, room)} key={room._id} className='chatNavButton'>
                         {room.name}
@@ -73,7 +74,7 @@ function ChatNav({ viewRoom, rooms }) {
                 Add Friend
             </button>
 
-            <button onClick={testFetch}>
+            <button onClick={socketTest}>
                 Clear All Messages
             </button>
         </div>

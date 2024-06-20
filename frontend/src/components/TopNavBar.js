@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from 'js-cookie';
 
@@ -8,15 +8,18 @@ import "../css/topNavBar.css";
 import { UserContext } from "../context/userContext";
 import LogInPopUp from "./LogInPopUp.js";
 import logo from '../images/chatIcon.png';
-import menuIcon from '../images/menuIcon.png';
+import accountIcon from '../images/accountIcon.png';
+import notificationIcon from '../images/notificationIcon.png';
 
 const serverURL = process.env.REACT_APP_BACKEND_URL;
 let mobileDropDown = false;
 
 function TopNavBar() {
+    const nav = useNavigate();
     const userContext = useContext(UserContext);
     const [logInWindow, setLogInWindow] = useState(false);
     const [notifications, setNotifications] = useState();
+    const [socketLogOut, setSocketLogOut] = useState(false);
 
     // Check for Cookie Token/Get notifications
     useEffect(() => {
@@ -28,10 +31,11 @@ function TopNavBar() {
             try {
                 await axios.get(`${serverURL}/authAccounts/context`, { headers: { Authorization: "bearer " + token } })
                     .then((res) => {
-                        if (res.data.message === "jwt expired" || !res.ok) return logOut();
+                        if (res.data.message === "jwt expired" || !res.status === "OK") return logOut();
                         let x = res.data;
                         userContext.setUser(x._id, token, x.userName, x.email, x.rooms, x.friends);
                         accountID = x._id;
+                        console.log(x)
                     });
             } catch (err) {
                 alert('Error Connected to Backend');
@@ -44,12 +48,13 @@ function TopNavBar() {
                 if (!accountID) accountID = userContext.id;
                 await axios.get(`${serverURL}/notifications/${accountID}`, { headers: { Authorization: "bearer " + token } })
                     .then((res) => {
-                        setNotifications(res.data);
+                        if (res.data.length > 0) setNotifications(res.data);
                     });
             } catch (err) {
                 alert(err.message);
             }
         }
+
         if (token && !userContext.userName) restoreSession();
         getNotifications();
     }, []);
@@ -66,7 +71,8 @@ function TopNavBar() {
     // Sign Out
     function logOut() {
         Cookies.remove('token');
-        window.location.reload();
+        userContext.setUser(null, null, null, null, null, null);
+        nav('/');
     }
 
     // Toggle Mobile Nav
@@ -86,7 +92,7 @@ function TopNavBar() {
         mobileDropDown = false;
         document.getElementById('topNavMenu').style.height = "0px";
         if (userContext.id) {
-            if (option == 0) console.log('log out');
+            if (option == 0) logOut();
             if (option == 1) console.log('my account');
         } else {
             if (option == 0) console.log('goto log in page');
@@ -114,6 +120,16 @@ function TopNavBar() {
         <Link to="/account/login" className="accountText">
             My Account
         </Link>
+        <a>
+            <div>
+                <img src={notificationIcon} alt="Menu Icon" height="28" className="menuIcon" />
+                {notifications &&
+                    <div className="notificationNumber">
+                        {notifications.length}
+                    </div>
+                }
+            </div>
+        </a>
     </>
 
     const mobileUnauthed = <>
@@ -153,7 +169,12 @@ function TopNavBar() {
             </div>
             <h3 className="nameText">Chatty App!</h3>
             <div id="menuIcon" onClick={onMobileNavClick}>
-                <img src={menuIcon} alt="Menu Icon" height="38" className="menuIcon" />
+                <img src={accountIcon} alt="Menu Icon" height="38" className="menuIcon" />
+                {notifications &&
+                    <div className="notificationNumber">
+                        {notifications.length}
+                    </div>
+                }
             </div>
         </div>
         <div className="topNavMenu" id="topNavMenu">
@@ -163,7 +184,7 @@ function TopNavBar() {
                 Notifications
             </a>
         </div>
-        <Outlet />
+        <Outlet context={[socketLogOut, setSocketLogOut]} />
     </>)
 }
 

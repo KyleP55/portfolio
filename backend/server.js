@@ -4,6 +4,8 @@ const app = express();
 const mongoose = require('mongoose');
 const server = require('http').createServer(app);
 const cors = require('cors');
+const { InMemorySessionStore } = require('./functions/sessonStore.js');
+const sessionStore = new InMemorySessionStore();
 
 
 const frontendUrl = process.env.FRONTEND_URL || 'http://127.0.0.1:3000';
@@ -40,7 +42,47 @@ server.listen(port, () => {
 
 // IO Stuff
 io.on('connection', (socket) => {
-    //console.log(`Socket ${socket.id} Connected`);
+    let auth = socket.handshake.auth;
+    if (auth) {
+        // console.log('no auth')
+        // console.log(auth);
+    }
+
+    socket.on('auth', (auth) => {
+        let check = sessionStore.findSession(auth.userID)
+        console.log('check')
+        console.log(check)
+        if (check) {
+            io.emit()
+            io.in(check.socketID).disconnectSockets();
+            console.log('closed old socket')
+        }
+        sessionStore.saveSession(auth.userID,
+            {
+                socketID: socket.id,
+                userName: auth.userName
+            }
+        );
+    });
+
+    socket.on('showall', () => {
+        async function showAllSockets() {
+            const socks = await io.fetchSockets();
+            console.log('-----------------------------------------');
+            let x = sessionStore.findAllSessions();
+            console.log('**Socks**')
+            for (const s of socks) {
+                console.log(s.id)
+            }
+            console.log("**SessionStores**")
+            x.forEach((i) => {
+                console.log(i);
+                console.log(sessionStore.findSession(i))
+            })
+        }
+
+        showAllSockets();
+    });
 
     socket.on('joinRoom', (roomId) => {
         socket.join(roomId);
@@ -53,7 +95,10 @@ io.on('connection', (socket) => {
     });
 
     socket.on('disconnect', () => {
-        //console.log('Someone Disconnected');
+        //console.log('should be removing', socket.id);
+        let id = sessionStore.findSessionBySocketID(socket.id);
+        //console.log('found', id)
+        sessionStore.deleteSession(id);
     });
 });
 

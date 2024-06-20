@@ -28,7 +28,6 @@ router.get('/:id', async (req, res) => {
         await notificationSchema.find(
             { account: accountID }
         ).then((r) => {
-            console.log(r)
             return res.json(r);
         });
     } catch (err) {

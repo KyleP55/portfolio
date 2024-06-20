@@ -6,28 +6,18 @@ import { UserContext } from '../context/userContext';
 
 const serverURL = process.env.REACT_APP_BACKEND_URL;
 
-function ChatBubble({ info }) {
+function ChatBubble({ info, sendFriendRequest }) {
     const userContext = useContext(UserContext);
 
+    // Add Friend
     async function onNameClick(name) {
         let answer = window.confirm("Add user " + name + " to friends?");
         if (answer) {
-            try {
-                await axios.post(
-                    `${serverURL}/authAccounts/friends/`,
-                    { id: userContext.id, name: name },
-                    { headers: { Authorization: 'bearer ' + userContext.token } }
-                ).then((res) => {
-                    if (res.ok) {
-
-                    }
-                })
-            } catch (err) {
-                console.log(err.message)
-            }
+            sendFriendRequest(name);
         }
     }
 
+    // Bubble Types
     if (info.sender === userContext.userName) {
         return (<>
             <div className="bubbleContainerYou padding16">
