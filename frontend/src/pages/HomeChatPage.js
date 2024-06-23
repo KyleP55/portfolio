@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import io from "socket.io-client";
 import Cookies from "js-cookie";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useNavigate } from "react-router-dom";
 
 import ChatNav from "../components/ChatNav.js";
 import ChatWindow from "../components/ChatWindow.js";
@@ -10,31 +10,48 @@ import { UserContext } from "../context/userContext.js";
 
 const serverURL = process.env.REACT_APP_BACKEND_URL;
 
-let socket = null;
+let socket = io(serverURL, { autoConnect: false });
+
+let signOut = false;
 
 function HomeChatPage() {
+    const nav = useNavigate();
     const userContext = useContext(UserContext);
     const [socketLogOut, setSocketLogOut] = useOutletContext();
     const [currentRoom, setCurrentRoom] = useState();
     const [newChat, setNewChat] = useState();
 
+    // Connect socket when logged in
     useEffect(() => {
         if (userContext.id) {
+            let sID = Cookies.get('sSID');
             let auth = {
                 userID: userContext.id,
-                userName: userContext.userName
+                userName: userContext.userName,
+                sessionID: sID
             }
-
-            socket = io(serverURL);
+            socket.connect();
             socket.emit('auth', auth);
-            socket.on('disconnect', () => {
-                alert('disconnected from server!')
-            })
+
+            socket.on('loggedInElsewhere', () => {
+                alert('Account logged in elsewhere');
+                socket.disconnect();
+                userContext.logOut();
+                nav('/');
+            });
+
+            socket.on('setSession', (sSID) => {
+                Cookies.set('sSID', sSID, { expires: 7 })
+            });
+
+            socket.on('notification', (info) => {
+                alert("Recieved a new notification!")
+            });
         }
     }, [userContext.id]);
 
+    // Join Rooms with Socket.io
     useEffect(() => {
-        // Join Rooms with Socket.io
         if (userContext.rooms) {
             userContext.rooms.forEach((room) => {
                 socket.emit('joinRoom', room._id);
@@ -53,14 +70,26 @@ function HomeChatPage() {
                 }
 
                 return () => {
-                    socket.disconnect();
+                    socket.close();
                 }
             });
         }
     }, [currentRoom]);
 
+    // Signout Socket Disconnect
     useEffect(() => {
-        if (socketLogOut) socket.disconnect();
+        if (socketLogOut) {
+            signOut = true;
+            setSocketLogOut(false);
+            socket.disconnect();
+        }
+        socket.on('disconnect', (reason, details) => {
+            if (!signOut) {
+                alert('disconnected from server!');
+                signOut = false;
+            }
+            nav('/');
+        });
     }, [socketLogOut]);
 
     // Change current room
@@ -85,10 +114,9 @@ function HomeChatPage() {
         }
     }
 
-    // Send Socket
+    // Send Message Socket
     function onSendHandler(info) {
         let x = currentRoom._id
-        console.log('current', x)
         socket.emit('sendMessage', x, info);
     }
 
@@ -102,17 +130,15 @@ function HomeChatPage() {
             let info = {
                 target: name,
                 type: 'Friend Request',
-                from: userContext.id
+                message: userContext.userName + " wants to add you as a friend!"
             }
 
             await axios.post(
-                `${serverURL}/notifications/`,
+                `${serverURL}/notifications`,
                 info,
                 { headers: { Authorization: 'bearer ' + userContext.token } }
             ).then((res) => {
-                if (res.status === "OK") {
-                    //socket.emit('notification', )
-                }
+                socket.emit('sendNotification', info);
             })
         } catch (err) {
             console.log(err.message)

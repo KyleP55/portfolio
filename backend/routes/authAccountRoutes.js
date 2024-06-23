@@ -37,7 +37,7 @@ router.get('/roomsfriends', async (req, res) => {
 });
 
 // Add Friend
-router.post('/friends/', async (req, res) => {
+router.post('/friends', async (req, res) => {
     try {
         await accountSchema.findByIdAndUpdate(
             { _id: req.body.id },
@@ -52,7 +52,7 @@ router.post('/friends/', async (req, res) => {
 });
 
 // Get Friends List
-router.get('/friends/', async (req, res) => {
+router.get('/friends', async (req, res) => {
     try {
         await accountSchema.find(
             { _id: req.query.id },

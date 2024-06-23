@@ -11,7 +11,8 @@ export const UserContext = createContext({
     friends: [],
     setUser: (_id, _token, _userName, _rooms, _friends) => { },
     setRooms: (rooms) => { },
-    setFriends: (friends) => { }
+    setFriends: (friends) => { },
+    logOut: () => { }
 });
 
 function UserContextProvider({ children }) {
@@ -32,7 +33,7 @@ function UserContextProvider({ children }) {
                 headers: { Authorization: "bearer " + _token },
                 params: { rooms: _rooms }
             }).then((res) => {
-                console.log('dataadadad ', res.data)
+                //console.log('dataadadad ', res.data)
                 setRoomsState([...res.data]);
             });
 
@@ -55,6 +56,14 @@ function UserContextProvider({ children }) {
         setFriendsState([...friends]);
     }
 
+    function logOut() {
+        setId();
+        setToken();
+        setUserName();
+        setRoomsState();
+        setFriendsState();
+    }
+
     const value = {
         id: id,
         token: token,
@@ -64,6 +73,7 @@ function UserContextProvider({ children }) {
         setUser: setUser,
         setRooms: setRooms,
         setFriends: setFriends,
+        logOut: logOut
     }
 
     return <UserContext.Provider value={value}>{children}</UserContext.Provider>

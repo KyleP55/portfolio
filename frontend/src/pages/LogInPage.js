@@ -38,30 +38,36 @@ function LogInPage() {
     }
 
     return (<>
-        <div className="formContainer">
-            <form>
-                <h1>Login</h1><br />
+        <div className="container-fluid">
+            <div className="row">
+                <div className="col-lg-4 col-md-8 col-xs-12 mx-auto">
+                    <div className="formContainer">
+                        <form>
+                            <h1>Login</h1><br />
 
-                <label><b>Email</b></label>
-                <input
-                    type="text"
-                    placeholder='Enter Email'
-                    onChange={(e) => setEmail(e.target.value)}
-                    value={email}
-                />
+                            <label><b>Email</b></label>
+                            <input
+                                type="text"
+                                placeholder='Enter Email'
+                                onChange={(e) => setEmail(e.target.value)}
+                                value={email}
+                            />
 
-                <label><b>Password</b></label>
-                <input
-                    type="password"
-                    placeholder='Enter Password'
-                    onChange={(e) => setPass(e.target.value)}
-                    value={pass}
-                />
+                            <label><b>Password</b></label>
+                            <input
+                                type="password"
+                                placeholder='Enter Password'
+                                onChange={(e) => setPass(e.target.value)}
+                                value={pass}
+                            />
 
-                <div className="formButtonContainer">
-                    <button type="button" className="chatNavButton" onClick={onSubmit}>Login</button>
+                            <div className="formButtonContainer">
+                                <button type="button" className="chatNavButton" onClick={onSubmit}>Login</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-            </form>
+            </div>
         </div>
     </>);
 

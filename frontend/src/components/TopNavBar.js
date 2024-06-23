@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { Outlet, Link, useNavigate } from "react-router-dom";
+import { Outlet, Link } from "react-router-dom";
 import axios from "axios";
 import Cookies from 'js-cookie';
 
@@ -15,7 +15,6 @@ const serverURL = process.env.REACT_APP_BACKEND_URL;
 let mobileDropDown = false;
 
 function TopNavBar() {
-    const nav = useNavigate();
     const userContext = useContext(UserContext);
     const [logInWindow, setLogInWindow] = useState(false);
     const [notifications, setNotifications] = useState();
@@ -72,7 +71,7 @@ function TopNavBar() {
     function logOut() {
         Cookies.remove('token');
         userContext.setUser(null, null, null, null, null, null);
-        nav('/');
+        setSocketLogOut(true);
     }
 
     // Toggle Mobile Nav

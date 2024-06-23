@@ -9,8 +9,8 @@ class InMemorySessionStore {
 
     findSessionByName(name) {
         for (let [key, value] of this.sessions) {
-            if (value.name === name) {
-                return key;
+            if (value.userName === name) {
+                return this.sessions.get(key);
             }
         }
     }

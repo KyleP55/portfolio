@@ -4,9 +4,11 @@ const app = express();
 const mongoose = require('mongoose');
 const server = require('http').createServer(app);
 const cors = require('cors');
+const crypto = require('crypto');
+const randomId = () => crypto.randomBytes(8).toString("hex");
+
 const { InMemorySessionStore } = require('./functions/sessonStore.js');
 const sessionStore = new InMemorySessionStore();
-
 
 const frontendUrl = process.env.FRONTEND_URL || 'http://127.0.0.1:3000';
 const url = process.env.DATABASE_URL || 'mongodb://127.0.0.1/localChatApp';
@@ -42,27 +44,31 @@ server.listen(port, () => {
 
 // IO Stuff
 io.on('connection', (socket) => {
-    let auth = socket.handshake.auth;
-    if (auth) {
-        // console.log('no auth')
-        // console.log(auth);
-    }
+    console.log('connected');
 
     socket.on('auth', (auth) => {
-        let check = sessionStore.findSession(auth.userID)
-        console.log('check')
-        console.log(check)
+        // Check if account is connected elsewhere
+        let check = sessionStore.findSession(auth.userID);
+        let sSID = auth.sessionID;
+
         if (check) {
-            io.emit()
-            io.in(check.socketID).disconnectSockets();
-            console.log('closed old socket')
+            if (sSID !== check.sessionID) {
+                io.in(check.socketID).emit('loggedInElsewhere');
+                sSID = randomId();
+            }
+        } else {
+            if (!sSID) sSID = randomId();
         }
+
+        // Save new connection info
         sessionStore.saveSession(auth.userID,
             {
                 socketID: socket.id,
-                userName: auth.userName
+                userName: auth.userName,
+                sessionID: sSID
             }
         );
+        io.to(socket.id).emit('setSession', sSID);
     });
 
     socket.on('showall', () => {
@@ -94,11 +100,19 @@ io.on('connection', (socket) => {
         //console.log('sent', roomId)
     });
 
+    socket.on('sendNotification', (info) => {
+        info.date = new Date().toDateString();
+        const targetID = sessionStore.findSessionByName(info.target);
+
+        if (targetID) io.to(targetID.socketID).emit('notification', info);
+    });
+
     socket.on('disconnect', () => {
         //console.log('should be removing', socket.id);
         let id = sessionStore.findSessionBySocketID(socket.id);
         //console.log('found', id)
         sessionStore.deleteSession(id);
+        console.log('disconnected')
     });
 });
 
