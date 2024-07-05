@@ -45,7 +45,14 @@ function HomeChatPage() {
             });
 
             socket.on('notification', (info) => {
-                alert("Recieved a new notification!")
+                let newNotification = {
+                    _id: new Date().getMilliseconds(),
+                    account: info.target,
+                    type: info.type,
+                    message: info.message,
+                    date: info.date
+                }
+                userContext.setNotifications([...userContext.notifications, newNotification]);
             });
         }
     }, [userContext.id]);
@@ -130,6 +137,7 @@ function HomeChatPage() {
             let info = {
                 target: name,
                 type: 'Friend Request',
+                from: userContext.id,
                 message: userContext.userName + " wants to add you as a friend!"
             }
 

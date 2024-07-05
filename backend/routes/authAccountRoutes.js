@@ -59,7 +59,7 @@ router.get('/friends', async (req, res) => {
             { friends: 1 }
         ).then((r) => {
             accountSchema.find(
-                { userName: { $in: r[0].friends } },
+                { _id: { $in: r[0].friends } },
                 { _id: 1, userName: 1 }
             ).then((r2) => {
                 return res.json(r2);

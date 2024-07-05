@@ -21,18 +21,17 @@ router.post('/', async (req, res) => {
         account: targetID._id,
         type: x.type,
         message: x.message,
+        from: x.from,
         date: new Date().toDateString()
     })
-    console.log('asdnhoasnd')
-    return res.status(200).json({ message: 'yee' });
-    try {
-        // await newNotification.save()
-        //     .then((r) => {
-        //         console.log('notification created')
-        //         return res.status(200);
-        //     });
 
-        return res.status(200);
+    try {
+        await newNotification.save()
+            .then((r) => {
+                console.log('notification created')
+                return res.json({ message: 'Completed' });
+            });
+
     } catch (err) {
         return res.json({ message: err.message });
     }
@@ -47,6 +46,30 @@ router.get('/:id', async (req, res) => {
         ).then((r) => {
             return res.json(r);
         });
+    } catch (err) {
+        return res.json({ message: err.message });
+    }
+});
+
+router.post('/acceptfriend/:id', async (req, res) => {
+    try {
+        await notificationSchema.findById(
+            req.params.id
+        ).then((r) => {
+            accountSchema.findByIdAndUpdate(
+                r.from,
+                { $push: { friends: r.account } }
+            ).then(() => { });
+
+            accountSchema.findByIdAndUpdate(
+                r.account,
+                { $push: { friends: r.from } }
+            ).then(() => { });
+
+        });
+
+        await notificationSchema.findByIdAndDelete(req.params.id);
+        return res.json({ message: 'Friend Added' });
     } catch (err) {
         return res.json({ message: err.message });
     }

@@ -1,5 +1,6 @@
 .chatNavContainer {
-    box-shadow: 0px 2px 1px 2px #888888;
+    box-shadow: 0px 4px 1px 2px #888888;
+    background-color: #eafff7;
     padding: 4px 16px;
     display: flex;
     flex-direction: column;
@@ -39,6 +40,7 @@
     outline-style: solid;
     border-radius: 8px;
     overflow-y: scroll;
+    background-color: #fff;
 }
 
 .navTitle {

@@ -10,17 +10,18 @@ import LogInPopUp from "./LogInPopUp.js";
 import logo from '../images/chatIcon.png';
 import accountIcon from '../images/accountIcon.png';
 import notificationIcon from '../images/notificationIcon.png';
+import NotificationsPopUp from "./NotificationsPopUp.js";
 
 const serverURL = process.env.REACT_APP_BACKEND_URL;
 let mobileDropDown = false;
+let notificationsOpen = false;
 
 function TopNavBar() {
     const userContext = useContext(UserContext);
     const [logInWindow, setLogInWindow] = useState(false);
-    const [notifications, setNotifications] = useState();
     const [socketLogOut, setSocketLogOut] = useState(false);
 
-    // Check for Cookie Token/Get notifications
+    // Check for Cookie Token/Get 
     useEffect(() => {
         let token = Cookies.get('token');
         let accountID = null;
@@ -41,21 +42,7 @@ function TopNavBar() {
             }
         }
 
-        // Get Notifications
-        async function getNotifications() {
-            try {
-                if (!accountID) accountID = userContext.id;
-                await axios.get(`${serverURL}/notifications/${accountID}`, { headers: { Authorization: "bearer " + token } })
-                    .then((res) => {
-                        if (res.data.length > 0) setNotifications(res.data);
-                    });
-            } catch (err) {
-                alert(err.message);
-            }
-        }
-
         if (token && !userContext.userName) restoreSession();
-        getNotifications();
     }, []);
 
     // Toggle Login Pop Up
@@ -70,7 +57,8 @@ function TopNavBar() {
     // Sign Out
     function logOut() {
         Cookies.remove('token');
-        userContext.setUser(null, null, null, null, null, null);
+        Cookies.remove('sSID');
+        userContext.setUser(null, null, null, null, null, null, null);
         setSocketLogOut(true);
     }
 
@@ -84,6 +72,17 @@ function TopNavBar() {
         }
 
         mobileDropDown = !mobileDropDown;
+    }
+
+    // Toggle notifications
+    function onNotifications() {
+        if (notificationsOpen) {
+            document.getElementById('notificationsContainer').style.left = "100vw";
+            notificationsOpen = false;
+        } else {
+            document.getElementById('notificationsContainer').style.left = "calc(100vw - 300px)";
+            notificationsOpen = true;
+        }
     }
 
     // Mobile Nav Usage
@@ -120,11 +119,11 @@ function TopNavBar() {
             My Account
         </Link>
         <a>
-            <div>
+            <div onClick={onNotifications}>
                 <img src={notificationIcon} alt="Menu Icon" height="28" className="menuIcon" />
-                {notifications &&
+                {userContext.notifications.length > 0 &&
                     <div className="notificationNumber">
-                        {notifications.length}
+                        {userContext.notifications.length}
                     </div>
                 }
             </div>
@@ -151,6 +150,7 @@ function TopNavBar() {
 
     // JSX
     return (<>
+        {/* Desktop/Tablet */}
         <div className="header">
             <div className="logo">
                 <img src={logo} alt="Chat Icon" height="44" className="logoIcon" />
@@ -162,6 +162,7 @@ function TopNavBar() {
                 {userContext.id && authed}
             </div>
         </div>
+        {/* Mobile */}
         <div className="navHeader">
             <div className="logo">
                 <img src={logo} alt="Chat Icon" height="44" className="logoIcon" />
@@ -169,13 +170,14 @@ function TopNavBar() {
             <h3 className="nameText">Chatty App!</h3>
             <div id="menuIcon" onClick={onMobileNavClick}>
                 <img src={accountIcon} alt="Menu Icon" height="38" className="menuIcon" />
-                {notifications &&
+                {userContext.notifications > 0 &&
                     <div className="notificationNumber">
-                        {notifications.length}
+                        {userContext.notifications.length}
                     </div>
                 }
             </div>
         </div>
+        {/* Mobile Drop Down Menu */}
         <div className="topNavMenu" id="topNavMenu">
             {!userContext.id && mobileUnauthed}
             {userContext.id && mobileAuthed}
@@ -183,6 +185,7 @@ function TopNavBar() {
                 Notifications
             </a>
         </div>
+        <NotificationsPopUp />
         <Outlet context={[socketLogOut, setSocketLogOut]} />
     </>)
 }
