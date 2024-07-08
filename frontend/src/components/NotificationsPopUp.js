@@ -1,11 +1,12 @@
 import { useContext } from "react";
 import axios from "axios";
+import { socket } from "../util/socket.js";
 
 import { UserContext } from "../context/userContext.js";
 
 const serverURL = process.env.REACT_APP_BACKEND_URL;
 
-function NotificationsPopUp() {
+function NotificationsPopUp({ closeNotifications }) {
     const userContext = useContext(UserContext);
 
     async function onClick(index) {
@@ -23,9 +24,27 @@ function NotificationsPopUp() {
                         }
                     ).then((res) => {
                         if (res.status === 200) {
-                            let newArr = userContext.notifications;
-                            newArr = newArr.splice(index, 1);
+                            let targetID = userContext.notifications[index].from;
+                            let newArr = [...userContext.notifications];
+                            newArr.splice(index, 1);
                             userContext.setNotifications([...newArr]);
+
+                            // update friends list
+                            try {
+                                axios.get(
+                                    `${serverURL}/authAccounts/friends`,
+                                    {
+                                        headers: { Authorization: "bearer " + userContext.token },
+                                        params: { id: userContext.id }
+                                    }
+                                ).then((res) => {
+                                    userContext.setFriends([...res.data]);
+                                });
+                            } catch (err) {
+                                console.log(err.message);
+                            }
+
+                            socket.emit('updateFriends', targetID);
                         }
                     });
                 } catch (err) {
@@ -36,13 +55,17 @@ function NotificationsPopUp() {
     }
 
     return (<div className='notificationsContainer' id='notificationsContainer'>
-        {userContext.notifications && userContext.notifications.map((notification, i) => {
+        <div class="closeBtnDiv"><div class="closebtn" onClick={closeNotifications}>
+            &times;
+        </div></div>
+        {userContext.notifications.length > 0 && userContext.notifications.map((notification, i) => {
             return <div onClick={onClick.bind(this, i)} key={i} className="notification">
                 <p className='notificationTitle'>{notification.type}</p>
                 <p className='notificationText'>{notification.message}</p>
                 <p className='notificationDate'>{notification.date}</p>
             </div>
         })}
+        {userContext.notifications.length == 0 && <h2>No notifications!</h2>}
     </div>)
 }
 

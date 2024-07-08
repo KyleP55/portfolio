@@ -21,6 +21,10 @@ function CreditsPage() {
             <img src={notificationIcon} alt="Notification Icon" height="44" className="logoIcon" />
             <a href="https://www.flaticon.com/free-icons/notification" title="notification icons">Notification icons created by Freepik - Flaticon</a>
         </div>
+        <div>
+            <img src={notificationIcon} alt="Notification Icon" height="44" className="logoIcon" />
+            <a href="https://www.flaticon.com/free-icons/more" title="more icons">More icons created by Freepik - Flaticon</a>
+        </div>
     </div>)
 }
 

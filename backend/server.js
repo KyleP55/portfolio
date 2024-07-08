@@ -101,10 +101,14 @@ io.on('connection', (socket) => {
     });
 
     socket.on('sendNotification', (info) => {
-        info.date = new Date().toDateString();
         const targetID = sessionStore.findSessionByName(info.target);
 
         if (targetID) io.to(targetID.socketID).emit('notification', info);
+    });
+
+    socket.on('updateFriends', (id) => {
+        const targetID = sessionStore.findSession(id);
+        if (targetID) io.to(targetID.socketID).emit('updateFriendsTrigger');
     });
 
     socket.on('disconnect', () => {

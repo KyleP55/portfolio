@@ -20,6 +20,7 @@ function TopNavBar() {
     const userContext = useContext(UserContext);
     const [logInWindow, setLogInWindow] = useState(false);
     const [socketLogOut, setSocketLogOut] = useState(false);
+    const [updateFriendsID, setUpdateFriendsID] = useState();
 
     // Check for Cookie Token/Get 
     useEffect(() => {
@@ -185,7 +186,7 @@ function TopNavBar() {
                 Notifications
             </a>
         </div>
-        <NotificationsPopUp />
+        <NotificationsPopUp closeNotifications={onNotifications} />
         <Outlet context={[socketLogOut, setSocketLogOut]} />
     </>)
 }

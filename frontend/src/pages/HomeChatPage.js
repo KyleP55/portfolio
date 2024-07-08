@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import io from "socket.io-client";
 import Cookies from "js-cookie";
+import { socket } from "../util/socket.js";
 import { useOutletContext, useNavigate } from "react-router-dom";
 
 import ChatNav from "../components/ChatNav.js";
@@ -10,14 +10,13 @@ import { UserContext } from "../context/userContext.js";
 
 const serverURL = process.env.REACT_APP_BACKEND_URL;
 
-let socket = io(serverURL, { autoConnect: false });
-
 let signOut = false;
 
 function HomeChatPage() {
     const nav = useNavigate();
     const userContext = useContext(UserContext);
     const [socketLogOut, setSocketLogOut] = useOutletContext();
+    const [updateFriendsID, setUpdateFriendsID] = useOutletContext();
     const [currentRoom, setCurrentRoom] = useState();
     const [newChat, setNewChat] = useState();
 
@@ -44,15 +43,39 @@ function HomeChatPage() {
                 Cookies.set('sSID', sSID, { expires: 7 })
             });
 
-            socket.on('notification', (info) => {
-                let newNotification = {
-                    _id: new Date().getMilliseconds(),
-                    account: info.target,
-                    type: info.type,
-                    message: info.message,
-                    date: info.date
+            socket.on('updateFriendsTrigger', () => {
+                try {
+                    async function getFriends() {
+                        await axios.get(
+                            `${serverURL}/authAccounts/friends`,
+                            {
+                                headers: { Authorization: "bearer " + userContext.token },
+                                params: { id: userContext.id }
+                            }
+                        ).then((res) => {
+                            userContext.setFriends([...res.data]);
+                        });
+                    }
+
+                    getFriends();
+                } catch (err) {
+                    console.log(err.message);
                 }
-                userContext.setNotifications([...userContext.notifications, newNotification]);
+            });
+
+            socket.on('notification', (info) => {
+                try {
+                    axios.get(
+                        `${serverURL}/notifications/${userContext.id}`,
+                        { headers: { Authorization: "bearer " + userContext.token } }
+                    ).then((res) => {
+                        userContext.setNotifications([...res.data]);
+
+
+                    })
+                } catch (err) {
+                    console.log(err.message)
+                }
             });
         }
     }, [userContext.id]);
@@ -133,23 +156,32 @@ function HomeChatPage() {
 
     // Friend Request
     async function onFriendRequest(name) {
-        try {
-            let info = {
-                target: name,
-                type: 'Friend Request',
-                from: userContext.id,
-                message: userContext.userName + " wants to add you as a friend!"
+        let friendExists = false;
+        userContext.friends.forEach((i) => {
+            if (i.userName === name) {
+                alert(`${name} is already your friend!`);
+                friendExists = true;
             }
+        });
+        if (friendExists == false) {
+            try {
+                let info = {
+                    target: name,
+                    type: 'Friend Request',
+                    from: userContext.id,
+                    message: userContext.userName + " wants to add you as a friend!"
+                }
 
-            await axios.post(
-                `${serverURL}/notifications`,
-                info,
-                { headers: { Authorization: 'bearer ' + userContext.token } }
-            ).then((res) => {
-                socket.emit('sendNotification', info);
-            })
-        } catch (err) {
-            console.log(err.message)
+                await axios.post(
+                    `${serverURL}/notifications`,
+                    info,
+                    { headers: { Authorization: 'bearer ' + userContext.token } }
+                ).then((res) => {
+                    socket.emit('sendNotification', info);
+                })
+            } catch (err) {
+                console.log(err.message)
+            }
         }
     }
 
