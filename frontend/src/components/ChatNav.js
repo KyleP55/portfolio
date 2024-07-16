@@ -7,6 +7,7 @@ import CreateRoomPopUp from "../components/CreateRoomPopUp.js";
 import { UserContext } from '../context/userContext.js';
 
 import menuIcon from '../images/menuIcon.png';
+import dotsIcon from '../images/dotsIcon.png';
 
 const serverURL = process.env.REACT_APP_BACKEND_URL;
 
@@ -29,7 +30,23 @@ function ChatNav({ viewRoom, rooms, socketTest }) {
 
     // pop up
     async function createRoom(name, visability) {
-        alert("Creat room " + name + " " + visability)
+        let newRoom = {
+            name: name,
+            public: visability,
+            group: true,
+            owner: userContext.id
+        }
+        try {
+            await axios.post(
+                `${serverURL}/rooms/`,
+                newRoom,
+                { headers: { Authorization: `bearer ${userContext.token}` } }
+            ).then((res) => {
+                alert('Created Room')
+            })
+        } catch (err) {
+            console.log(err.message);
+        }
     }
 
     // Toggle Mobile Nav
@@ -37,13 +54,25 @@ function ChatNav({ viewRoom, rooms, socketTest }) {
 
     }
 
-    // Message Friend
-    function friendMessage(friendID) {
-
-    }
-
-    async function testFetch() {
-        console.log(userContext.rooms)
+    // Remove Room/Friend
+    function removeRoom(room, type) {
+        let str;
+        if (type === 'friend') {
+            str = "Leave Room " + room.userName + "?";
+        } else {
+            str = "Leave Room " + room.name + "?"
+        }
+        let answer = window.confirm(str);
+        if (answer) {
+            try {
+                axios.delete(
+                    `${serverURL}/rooms/${room._id}`,
+                    { headers: { Authorization: `bearer ${userContext.token}` } }
+                );
+            } catch (err) {
+                console.log(err.message);
+            }
+        }
     }
 
     return (<>
@@ -65,9 +94,15 @@ function ChatNav({ viewRoom, rooms, socketTest }) {
             <p className="navTitle">Your Friends</p>
             <div className="roomsDiv">
                 {userContext.friends && userContext.friends.map((friend) => {
-                    return <button onClick={friendMessage.bind(this, friend._id)} key={friend._id} className='chatNavButton'>
+                    return <div onClick={viewRoom.bind(this, friend)} key={friend._id} className='chatNavButton'>
                         {friend.userName}
-                    </button>
+                        <div onClick={(e) => {
+                            e.stopPropagation();
+                            removeRoom(friend, 'friend');
+                        }}>
+                            <img src={dotsIcon} className="dotsIcon" width="30px" />
+                        </div>
+                    </div>
                 })}
             </div>
             <button onClick={togglePopup} className="chatNavButton">
@@ -81,7 +116,7 @@ function ChatNav({ viewRoom, rooms, socketTest }) {
         <div className="mobileChatNavButton">
             <img src={menuIcon} width="32px" />
         </div>
-    </>)
-}
+    </>);
+};
 
 export default ChatNav;

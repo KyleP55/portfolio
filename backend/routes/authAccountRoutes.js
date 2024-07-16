@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const accountSchema = require('../models/AccountSchema.js');
+const roomSchema = require('../models/RoomSchema.js');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
@@ -54,6 +55,14 @@ router.post('/friends', async (req, res) => {
 // Get Friends List
 router.get('/friends', async (req, res) => {
     try {
+        let re = new RegExp(`${req.query.id}`);
+        let rooms = await roomSchema.find(
+            {
+                group: false,
+                name: { $regex: re }
+            }
+        );
+
         await accountSchema.find(
             { _id: req.query.id },
             { friends: 1 }
@@ -62,7 +71,21 @@ router.get('/friends', async (req, res) => {
                 { _id: { $in: r[0].friends } },
                 { _id: 1, userName: 1 }
             ).then((r2) => {
-                return res.json(r2);
+                let friendsList = [];
+                rooms.forEach((room) => {
+                    r2.forEach((friend, i) => {
+                        if (room.name.replace(re, "").replace("_", "") == friend._id) {
+                            let newFriend = {
+                                _id: room._id,
+                                userName: friend.userName,
+                                friendID: friend._id
+                            }
+
+                            friendsList.push(newFriend);
+                        }
+                    });
+                });
+                return res.json(friendsList);
             });
         })
     } catch (err) {

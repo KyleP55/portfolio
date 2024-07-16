@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const notificationSchema = require('../models/NotificationSchema.js');
 const accountSchema = require('../models/AccountSchema.js');
+const roomSchema = require('../models/RoomSchema.js');
 
 router.post('/', async (req, res) => {
     let x = req.body;
@@ -23,7 +24,7 @@ router.post('/', async (req, res) => {
         message: x.message,
         from: x.from,
         date: new Date().toDateString()
-    })
+    });
 
     try {
         await newNotification.save()
@@ -56,15 +57,25 @@ router.post('/acceptfriend/:id', async (req, res) => {
         await notificationSchema.findById(
             req.params.id
         ).then((r) => {
+            let newRoom = new roomSchema({
+                name: r.account + "_" + r.from,
+                public: false,
+                group: false
+            });
+
+            const x = newRoom.save();
+
             accountSchema.findByIdAndUpdate(
                 r.from,
-                { $push: { friends: r.account } }
+                { $push: { friends: r.account, rooms: x._id } }
             ).then(() => { });
 
             accountSchema.findByIdAndUpdate(
                 r.account,
-                { $push: { friends: r.from } }
+                { $push: { friends: r.from, rooms: x._id } }
             ).then(() => { });
+
+
 
         });
 

@@ -55,7 +55,7 @@ function NotificationsPopUp({ closeNotifications }) {
     }
 
     return (<div className='notificationsContainer' id='notificationsContainer'>
-        <div class="closeBtnDiv"><div class="closebtn" onClick={closeNotifications}>
+        <div className="closeBtnDiv"><div className="closebtn" onClick={closeNotifications}>
             &times;
         </div></div>
         {userContext.notifications.length > 0 && userContext.notifications.map((notification, i) => {

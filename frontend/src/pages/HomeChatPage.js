@@ -86,6 +86,9 @@ function HomeChatPage() {
             userContext.rooms.forEach((room) => {
                 socket.emit('joinRoom', room._id);
             });
+            userContext.friends.forEach((friend) => {
+                socket.emit('joinRoom', friend._id);
+            });
         }
     }, [userContext.rooms]);
 
@@ -116,8 +119,8 @@ function HomeChatPage() {
         socket.on('disconnect', (reason, details) => {
             if (!signOut) {
                 alert('disconnected from server!');
-                signOut = false;
             }
+            signOut = false;
             nav('/');
         });
     }, [socketLogOut]);
@@ -146,7 +149,7 @@ function HomeChatPage() {
 
     // Send Message Socket
     function onSendHandler(info) {
-        let x = currentRoom._id
+        let x = currentRoom._id;
         socket.emit('sendMessage', x, info);
     }
 

@@ -47,6 +47,7 @@ function UserContextProvider({ children }) {
                     params: { id: _id }
                 }
             ).then((res) => {
+                console.log(res.data)
                 setFriendsState([...res.data]);
             });
 

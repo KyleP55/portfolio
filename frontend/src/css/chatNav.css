@@ -26,10 +26,22 @@
     text-decoration: none;
     font-size: 16px;
     border-radius: 8px;
+    position: relative;
 }
 
 .chatNavButton:hover {
     opacity: 60%;
+}
+
+.friendsP {
+    margin: 0px;
+}
+
+.dotsIcon {
+    position: absolute;
+    right: 2%;
+    top: 50%;
+    transform: translate(-0%, -45%);
 }
 
 .roomsDiv {

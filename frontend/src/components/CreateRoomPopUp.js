@@ -2,7 +2,7 @@ import { useState } from "react";
 
 function CreateRoomPopUp({ onCreate, onClose }) {
     const [roomName, setRoomName] = useState('');
-    const [visability, setVisability] = useState('public');
+    const [visability, setVisability] = useState(true);
 
     function onOptionChange(e) {
         setVisability(e.target.value);
@@ -24,7 +24,7 @@ function CreateRoomPopUp({ onCreate, onClose }) {
                         type='radio'
                         value={true}
                         name="visability"
-                        checked={visability === 'public'}
+                        checked={visability === true}
                         onChange={onOptionChange}
                     /> Public
                 </div>
@@ -33,13 +33,16 @@ function CreateRoomPopUp({ onCreate, onClose }) {
                         type='radio'
                         value={false}
                         name="visability"
-                        checked={visability === 'private'}
+                        checked={visability === false}
                         onChange={onOptionChange}
                     /> Private
                 </div>
             </div>
 
-            <button onClick={onCreate.bind(this, roomName, visability)}>
+            <button onClick={(e) => {
+                e.preventDefault();
+                onCreate(roomName, visability);
+            }}>
                 Create
             </button>
             <button onClick={onClose}>

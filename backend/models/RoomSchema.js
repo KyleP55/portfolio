@@ -13,6 +13,11 @@ const roomSchema = new mongoose.Schema({
         type: String,
         required: false
     },
+    group: {
+        type: Boolean,
+        required: false,
+        default: true,
+    },
     owner: {
         type: String,
         required: false
