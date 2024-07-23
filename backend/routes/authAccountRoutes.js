@@ -37,6 +37,22 @@ router.get('/roomsfriends', async (req, res) => {
     }
 });
 
+// Add Room
+router.post('/joinRoom', async (req, res) => {
+    try {
+        await accountSchema.findByIdAndUpdate(
+            req.body._id,
+            { $push: { rooms: req.body.roomID }}
+        ).then((r) => {
+            console.log(r)
+            return res.json({ message: 'should be added'});
+        });
+    } catch(err) {
+        console.log(err.message)
+        return res.json({ message: err.message });
+    }
+});
+
 // Add Friend
 router.post('/friends', async (req, res) => {
     try {

@@ -10,28 +10,34 @@ import { UserContext } from "../context/userContext.js";
 
 const serverURL = process.env.REACT_APP_BACKEND_URL;
 
-let signOut = false;
-
 function HomeChatPage() {
     const nav = useNavigate();
     const userContext = useContext(UserContext);
     const [socketLogOut, setSocketLogOut] = useOutletContext();
-    const [updateFriendsID, setUpdateFriendsID] = useOutletContext();
+    const [socketConnect, setSocketConnect] = useState(false);
     const [currentRoom, setCurrentRoom] = useState();
     const [newChat, setNewChat] = useState();
 
+    function authSocket() {
+        let sID = Cookies.get('sSID');
+        let auth = {
+            userID: userContext.id,
+            userName: userContext.userName,
+            sessionID: sID
+        }
+        socket.emit('auth', auth);
+    }
+
     // Connect socket when logged in
     useEffect(() => {
-        if (userContext.id) {
-            let sID = Cookies.get('sSID');
-            let auth = {
-                userID: userContext.id,
-                userName: userContext.userName,
-                sessionID: sID
-            }
-            socket.connect();
-            socket.emit('auth', auth);
+        if (userContext.id && socket.connected) {
+            authSocket();
 
+            // Connection Error
+            socket.on('connect_error', (err) => {
+                alert(err.message)
+            });
+            // Logged In Elsewhere
             socket.on('loggedInElsewhere', () => {
                 alert('Account logged in elsewhere');
                 socket.disconnect();
@@ -39,10 +45,12 @@ function HomeChatPage() {
                 nav('/');
             });
 
+            // Set Session Cookie
             socket.on('setSession', (sSID) => {
                 Cookies.set('sSID', sSID, { expires: 7 })
             });
 
+            // Update Friends
             socket.on('updateFriendsTrigger', () => {
                 try {
                     async function getFriends() {
@@ -63,6 +71,7 @@ function HomeChatPage() {
                 }
             });
 
+            // On Notification
             socket.on('notification', (info) => {
                 try {
                     axios.get(
@@ -77,20 +86,38 @@ function HomeChatPage() {
                     console.log(err.message)
                 }
             });
+
+            // On Disconnect
+            socket.on('disconnect', (reason, details) => {
+                if (socket.active) {
+                    let answer = window.confirm("Disconnected from server, Reconnect? \n\n Reason: " + reason);
+                    if (answer) {
+                        socket.connect();
+                        setSocketConnect(true);
+                        authSocket();
+                        return;
+                    }
+                }
+                userContext.logOut();
+                nav('/');
+            });
         }
-    }, [userContext.id]);
+    }, [userContext.friends]);
 
     // Join Rooms with Socket.io
     useEffect(() => {
-        if (userContext.rooms) {
+        if (userContext.rooms.length > 0 && socketConnect) {
             userContext.rooms.forEach((room) => {
                 socket.emit('joinRoom', room._id);
             });
+        }
+        if (userContext.friends.length > 0 && socketConnect) {
             userContext.friends.forEach((friend) => {
                 socket.emit('joinRoom', friend._id);
             });
         }
-    }, [userContext.rooms]);
+        setSocketConnect(false);
+    }, [userContext.rooms, userContext.friends, socketConnect]);
 
     // Update message if room = socket
     useEffect(() => {
@@ -108,22 +135,6 @@ function HomeChatPage() {
             });
         }
     }, [currentRoom]);
-
-    // Signout Socket Disconnect
-    useEffect(() => {
-        if (socketLogOut) {
-            signOut = true;
-            setSocketLogOut(false);
-            socket.disconnect();
-        }
-        socket.on('disconnect', (reason, details) => {
-            if (!signOut) {
-                alert('disconnected from server!');
-            }
-            signOut = false;
-            nav('/');
-        });
-    }, [socketLogOut]);
 
     // Change current room
     function changeRoom(newRoom) {

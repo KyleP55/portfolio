@@ -1,11 +1,12 @@
 import { useState, useEffect, useContext } from "react";
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from 'js-cookie';
 
 import "../css/topNavBar.css";
 
 import { UserContext } from "../context/userContext";
+import { socket } from "../util/socket.js";
 import LogInPopUp from "./LogInPopUp.js";
 import logo from '../images/chatIcon.png';
 import accountIcon from '../images/accountIcon.png';
@@ -17,6 +18,7 @@ let mobileDropDown = false;
 let notificationsOpen = false;
 
 function TopNavBar() {
+    const nav = useNavigate();
     const userContext = useContext(UserContext);
     const [logInWindow, setLogInWindow] = useState(false);
     const [socketLogOut, setSocketLogOut] = useState(false);
@@ -59,8 +61,9 @@ function TopNavBar() {
     function logOut() {
         Cookies.remove('token');
         Cookies.remove('sSID');
-        userContext.setUser(null, null, null, null, null, null, null);
-        setSocketLogOut(true);
+        socket.disconnect();
+        userContext.logOut();
+        nav('/');
     }
 
     // Toggle Mobile Nav

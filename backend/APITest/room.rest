@@ -3,7 +3,7 @@ POST http://localhost:5000/rooms/
 Content-Type: application/json
 
 {
-    "name": "Global",
+    "name": "Another Test Room",
     "public": true,
     "password": null,
     "owner": null

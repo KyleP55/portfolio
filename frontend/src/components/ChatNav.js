@@ -4,6 +4,7 @@ import axios from 'axios';
 import '../css/chatNav.css';
 
 import CreateRoomPopUp from "../components/CreateRoomPopUp.js";
+import SearchPopUp from "../components/SearchPopUp.js";
 import { UserContext } from '../context/userContext.js';
 
 import menuIcon from '../images/menuIcon.png';
@@ -14,6 +15,8 @@ const serverURL = process.env.REACT_APP_BACKEND_URL;
 function ChatNav({ viewRoom, rooms, socketTest }) {
     const userContext = useContext(UserContext);
     const [popup, setPopup] = useState(false);
+    const [findPopup, setFindPopup] = useState(false);
+    const [roomType, setRoomType] = useState(true);
 
     // Clear Messages ** Delete Later **
     async function clearDB() {
@@ -23,12 +26,17 @@ function ChatNav({ viewRoom, rooms, socketTest }) {
             });
     }
 
-    // Toggle
+    // Toggles
     function togglePopup() {
         if (popup) setPopup(false); else setPopup(true);
     }
 
-    // pop up
+    function toggleRoomPopup(isRoom) {
+        if (isRoom) setRoomType(isRoom);
+        if (findPopup) setFindPopup(false); else setFindPopup(true);
+    }
+
+    // Create Room
     async function createRoom(name, visability) {
         let newRoom = {
             name: name,
@@ -54,6 +62,8 @@ function ChatNav({ viewRoom, rooms, socketTest }) {
 
     }
 
+
+
     // Remove Room/Friend
     function removeRoom(room, type) {
         let str;
@@ -69,6 +79,26 @@ function ChatNav({ viewRoom, rooms, socketTest }) {
                     `${serverURL}/rooms/${room._id}`,
                     { headers: { Authorization: `bearer ${userContext.token}` } }
                 );
+
+                if (type === 'friend') {
+                    let newList = [...userContext.friends];
+                    userContext.friends.forEach((friend, i) => {
+                        if (friend._id === room._id) {
+                            newList.splice(i, 1);
+                        }
+                    });
+
+                    userContext.setFriends([...newList]);
+                } else {
+                    let newList = [...userContext.rooms];
+                    userContext.rooms.forEach((r, i) => {
+                        if (r._id === room._id) {
+                            newList.splice(i, 1);
+                        }
+                    });
+
+                    userContext.setRooms([...newList]);
+                }
             } catch (err) {
                 console.log(err.message);
             }
@@ -77,6 +107,8 @@ function ChatNav({ viewRoom, rooms, socketTest }) {
 
     return (<>
         {popup && <CreateRoomPopUp onCreate={createRoom} onClose={togglePopup} />}
+        {findPopup && <SearchPopUp isRoom={roomType} onClose={toggleRoomPopup} />}
+
         <div className="col-md-4 col-lg-2 sideNav chatNavContainer">
             <p className="navTitle">Your Rooms</p>
             <div className="roomsDiv">
@@ -84,9 +116,18 @@ function ChatNav({ viewRoom, rooms, socketTest }) {
                 {userContext.rooms && userContext.rooms.map((room) => {
                     return <button onClick={viewRoom.bind(this, room)} key={room._id} className='chatNavButton'>
                         {room.name}
+                        <div onClick={(e) => {
+                            e.stopPropagation();
+                            removeRoom(room, 'room');
+                        }}>
+                            <img src={dotsIcon} className="dotsIcon" width="30px" />
+                        </div>
                     </button>
                 })}
             </div>
+            <button onClick={toggleRoomPopup.bind(this, true)} className="chatNavButton">
+                Find Rooms
+            </button>
             <button onClick={togglePopup} className="chatNavButton">
                 Create Room
             </button>
@@ -105,7 +146,7 @@ function ChatNav({ viewRoom, rooms, socketTest }) {
                     </div>
                 })}
             </div>
-            <button onClick={togglePopup} className="chatNavButton">
+            <button onClick={toggleRoomPopup.bind(this, false)} className="chatNavButton">
                 Add Friend
             </button>
 
