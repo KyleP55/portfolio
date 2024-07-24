@@ -37,15 +37,35 @@ router.get('/roomsfriends', async (req, res) => {
     }
 });
 
-// Add Room
+// Join Room
 router.post('/joinRoom', async (req, res) => {
     try {
         await accountSchema.findByIdAndUpdate(
             req.body._id,
             { $push: { rooms: req.body.roomID }}
         ).then((r) => {
-            console.log(r)
-            return res.json({ message: 'should be added'});
+            return res.json(r);
+        });
+    } catch(err) {
+        return res.json({ message: err.message });
+    }
+});
+
+// Leave Room
+router.delete('/leaveRoom/:id', async (req, res) => {
+    try {
+        let updatedRooms = await accountSchema.findById(req.params.id).rooms;
+        if (!updatedRooms) throw "No Room Found";
+
+        updatedRooms.forEach((r, i) => {
+            if (r === req.params.id) updatedRooms.splice(i, 1);
+        });
+        console.log(updatedRooms)
+        await accountSchema.findByIdAndUpdate(
+            req.body._id,
+            { rooms: [...updatedRooms]}
+        ).then((r) => {
+            return res.json(r);
         });
     } catch(err) {
         console.log(err.message)

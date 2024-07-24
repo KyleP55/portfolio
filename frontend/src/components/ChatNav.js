@@ -68,19 +68,20 @@ function ChatNav({ viewRoom, rooms, socketTest }) {
     function removeRoom(room, type) {
         let str;
         if (type === 'friend') {
-            str = "Leave Room " + room.userName + "?";
+            str = "Remove Friend " + room.userName + "?";
         } else {
             str = "Leave Room " + room.name + "?"
         }
         let answer = window.confirm(str);
         if (answer) {
             try {
-                axios.delete(
-                    `${serverURL}/rooms/${room._id}`,
-                    { headers: { Authorization: `bearer ${userContext.token}` } }
-                );
-
+                // If removing friend, delete private room and update
                 if (type === 'friend') {
+                    axios.delete(
+                        `${serverURL}/rooms/${room._id}`,
+                        { headers: { Authorization: `bearer ${userContext.token}` } }
+                    );
+
                     let newList = [...userContext.friends];
                     userContext.friends.forEach((friend, i) => {
                         if (friend._id === room._id) {
@@ -90,14 +91,22 @@ function ChatNav({ viewRoom, rooms, socketTest }) {
 
                     userContext.setFriends([...newList]);
                 } else {
-                    let newList = [...userContext.rooms];
-                    userContext.rooms.forEach((r, i) => {
-                        if (r._id === room._id) {
-                            newList.splice(i, 1);
-                        }
-                    });
+                    axios.delete(
+                        `${serverURL}/authAccounts/leaveRoom/${room._id}`,
+                        { headers: { Authorization: `bearer ${userContext.token}` } }
+                    ).then((r) => {
+                        //userContext.setRooms([...r.data]);
+                        console.log(r.data)
+                    })
 
-                    userContext.setRooms([...newList]);
+                    // let newList = [...userContext.rooms];
+                    // userContext.rooms.forEach((r, i) => {
+                    //     if (r._id === room._id) {
+                    //         newList.splice(i, 1);
+                    //     }
+                    // });
+
+                    // userContext.setRooms([...newList]);
                 }
             } catch (err) {
                 console.log(err.message);

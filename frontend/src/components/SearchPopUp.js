@@ -13,11 +13,23 @@ function SearchPopUp({ isRoom, onClose }) {
   // Load all public rooms
   useEffect(() => {
     async function getRooms() {
-      axios.get(`${serverURL}/rooms/public`, { headers: { Authorization: 'bearer: ' + userContext.token}})
-      .then((res) => {
-        console.log(res.data)
-        if (res.data) setPubRooms([...res.data]);
-      });
+      try {
+        axios.get(`${serverURL}/rooms/public`, { headers: { Authorization: 'bearer: ' + userContext.token}})
+        .then((res) => {
+          if (res.data) {
+            // check what rooms you are already joined
+            let newArr = [...res.data];
+            res.data.forEach((r, i) => {
+              userContext.rooms.forEach((myR) => {
+                if (r._id === myR._id) newArr.splice(i, 1);
+              });
+            });
+            setPubRooms([...newArr]);
+          }
+        });
+      } catch(err) {
+        alert(err.message);
+      }
     }
 
     getRooms();
@@ -31,7 +43,6 @@ function SearchPopUp({ isRoom, onClose }) {
       return;
     }
 
-    console.log(room)
     const info = {
       _id: userContext.id,
       roomID: room._id
@@ -43,7 +54,7 @@ function SearchPopUp({ isRoom, onClose }) {
         info,
         { headers: { Authorization: "bearer " + userContext.token }}
       ).then((res) => {
-        alert('Added Room');
+        console.log(res.data)
       });
     } catch(err) {
       alert(err.message);
