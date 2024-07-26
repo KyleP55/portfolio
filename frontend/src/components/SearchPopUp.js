@@ -54,7 +54,7 @@ function SearchPopUp({ isRoom, onClose }) {
         info,
         { headers: { Authorization: "bearer " + userContext.token }}
       ).then((res) => {
-        console.log(res.data)
+        userContext.setRooms([...userContext.rooms, res.data]);
       });
     } catch(err) {
       alert(err.message);
@@ -69,11 +69,11 @@ function SearchPopUp({ isRoom, onClose }) {
 
       <div className="roomsDiv">
         {pubRooms && pubRooms.map((r) => {
-          return <div key={r._id}
+          return <button key={r._id}
             className='chatNavButton'
             onClick={onRoomClick.bind(this, r)}>
               {r.name}
-            </div>
+            </button>
         })}
       </div>
       <label><b>Search:</b></label>

@@ -83,4 +83,14 @@ router.post('/acceptfriend/:id', async (req, res) => {
     }
 });
 
+router.delete('/:id', async (req, res) => {
+    try {
+        await notificationSchema.findByIdAndDelete(req.params.id);
+
+        return res.json({ message: 'Deleted Notification' });
+    } catch(err) {
+        return res.json({ message: err.message });
+    }
+});
+
 module.exports = router;

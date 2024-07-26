@@ -94,19 +94,17 @@ function ChatNav({ viewRoom, rooms, socketTest }) {
                     axios.delete(
                         `${serverURL}/authAccounts/leaveRoom/${room._id}`,
                         { headers: { Authorization: `bearer ${userContext.token}` } }
-                    ).then((r) => {
-                        //userContext.setRooms([...r.data]);
-                        console.log(r.data)
-                    })
+                    ).then((res) => {
+                        let newArr = [...userContext.rooms];
 
-                    // let newList = [...userContext.rooms];
-                    // userContext.rooms.forEach((r, i) => {
-                    //     if (r._id === room._id) {
-                    //         newList.splice(i, 1);
-                    //     }
-                    // });
+                        newArr.forEach((r, i) => {
+                            if (r._id === room._id) {
+                                newArr.splice(i, 1);
+                            }
+                        });
 
-                    // userContext.setRooms([...newList]);
+                        userContext.setRooms([...newArr]);
+                    });
                 }
             } catch (err) {
                 console.log(err.message);

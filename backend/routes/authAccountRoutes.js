@@ -40,12 +40,17 @@ router.get('/roomsfriends', async (req, res) => {
 // Join Room
 router.post('/joinRoom', async (req, res) => {
     try {
-        await accountSchema.findByIdAndUpdate(
+        const roomsList = await accountSchema.findByIdAndUpdate(
             req.body._id,
-            { $push: { rooms: req.body.roomID }}
-        ).then((r) => {
-            return res.json(r);
-        });
+            { $push: { rooms: req.body.roomID }},
+            { new: true }
+        );
+
+        const room = await roomSchema.findById(req.body.roomID);
+
+        console.log(room)
+        return res.json(room);
+
     } catch(err) {
         return res.json({ message: err.message });
     }
@@ -53,19 +58,21 @@ router.post('/joinRoom', async (req, res) => {
 
 // Leave Room
 router.delete('/leaveRoom/:id', async (req, res) => {
+    console.log(req.userData.id)
     try {
-        let updatedRooms = await accountSchema.findById(req.params.id).rooms;
-        if (!updatedRooms) throw "No Room Found";
+        let updatedRooms = await accountSchema.findById(req.userData.id);
+        if (!updatedRooms) return res.json({ message: "Account not found" });
 
-        updatedRooms.forEach((r, i) => {
-            if (r === req.params.id) updatedRooms.splice(i, 1);
+        updatedRooms.rooms.forEach((r, i) => {
+            if (r === req.params.id) updatedRooms.rooms.splice(i, 1);
         });
-        console.log(updatedRooms)
+
         await accountSchema.findByIdAndUpdate(
-            req.body._id,
-            { rooms: [...updatedRooms]}
+            req.userData.id,
+            { rooms: [...updatedRooms.rooms]},
+            { new: true }
         ).then((r) => {
-            return res.json(r);
+            return res.json(r.rooms);
         });
     } catch(err) {
         console.log(err.message)
