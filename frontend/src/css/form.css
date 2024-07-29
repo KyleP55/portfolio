@@ -92,6 +92,7 @@ form {
     height: 26px;
     display: flex;
     flex-direction: row-reverse;
+    caret-color: transparent;
 }
 
 .findCloseBtn {

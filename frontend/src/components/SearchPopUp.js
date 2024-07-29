@@ -19,9 +19,12 @@ function SearchPopUp({ isRoom, onClose }) {
           if (res.data) {
             // check what rooms you are already joined
             let newArr = [...res.data];
+            console.log('---------------')
             res.data.forEach((r, i) => {
               userContext.rooms.forEach((myR) => {
+                console.log('checking', r._id, myR._id)
                 if (r._id === myR._id) newArr.splice(i, 1);
+                i--;
               });
             });
             setPubRooms([...newArr]);
@@ -61,13 +64,33 @@ function SearchPopUp({ isRoom, onClose }) {
     }
   }
 
+  // Search Room
+  async function searchRoom() {
+    try {
+      const res = await axios.get(`${serverURL}/rooms/search/${searchText}`,
+        { headers: { Authorization: 'bearer ' + userContext.token}}
+      );
+
+      if (!res.data) {
+        alert('Could not find room named ' + searchText);
+        return;
+      } else {
+        alert('Request to join room ' + searchText + ' sent!');
+      }
+
+      
+    } catch(err) {
+      console.log(err.message);
+    }
+  }
+
   const roomForm = <>
     <div className="findDiv">
       <div className="findCloseDiv"><div className="findCloseBtn" onClick={onClose}>
               <p>&times;</p>
           </div></div>
 
-      <div className="roomsDiv">
+      <div className="roomsListDiv">
         {pubRooms && pubRooms.map((r) => {
           return <button key={r._id}
             className='chatNavButton'
@@ -75,6 +98,8 @@ function SearchPopUp({ isRoom, onClose }) {
               {r.name}
             </button>
         })}
+        {pubRooms && pubRooms.length < 1 && 
+        <h2 className="centerTitle">No Public Rooms To Join</h2>}
       </div>
       <label><b>Search:</b></label>
       <input

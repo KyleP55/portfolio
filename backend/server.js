@@ -11,6 +11,7 @@ const { InMemorySessionStore } = require('./functions/sessonStore.js');
 const sessionStore = new InMemorySessionStore();
 
 const frontendUrl = process.env.FRONTEND_URL || 'http://127.0.0.1:3000';
+//process.env.DATABASE_URL || 
 const url = process.env.DATABASE_URL || 'mongodb://127.0.0.1:27017/alChatApp';
 const port = process.env.PORT || 5000;
 

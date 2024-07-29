@@ -29,11 +29,13 @@ function ChatNav({ viewRoom, rooms, socketTest }) {
     // Toggles
     function togglePopup() {
         if (popup) setPopup(false); else setPopup(true);
+        if (findPopup) setFindPopup(false);
     }
 
     function toggleRoomPopup(isRoom) {
         if (isRoom) setRoomType(isRoom);
         if (findPopup) setFindPopup(false); else setFindPopup(true);
+        if (popup) setPopup(false);
     }
 
     // Create Room
