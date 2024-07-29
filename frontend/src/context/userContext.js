@@ -1,5 +1,6 @@
 import { createContext, useState } from "react";
 import axios from "axios";
+import { socket } from "../util/socket";
 
 const serverURL = process.env.REACT_APP_BACKEND_URL;
 
@@ -30,12 +31,17 @@ function UserContextProvider({ children }) {
         setToken(_token);
         setUserName(_userName);
 
+        socket.connect();
+
         try {
             // Get Rooms
             await axios.get(`${serverURL}/rooms/list`, {
                 headers: { Authorization: "bearer " + _token },
                 params: { rooms: _rooms }
             }).then((res) => {
+                res.data.forEach((room) => {
+                    socket.emit('joinRoom', room._id);
+                });
                 setRoomsState([...res.data]);
             });
 
@@ -47,7 +53,9 @@ function UserContextProvider({ children }) {
                     params: { id: _id }
                 }
             ).then((res) => {
-                console.log(res.data)
+                res.data.forEach((friend) => {
+                    socket.emit('joinRoom', friend._id);
+                });
                 setFriendsState([...res.data]);
             });
 
@@ -57,6 +65,8 @@ function UserContextProvider({ children }) {
             }).then((res) => {
                 setNotificationsState([...res.data]);
             });
+
+
         } catch (err) {
             console.log(err.message)
         }
@@ -78,9 +88,9 @@ function UserContextProvider({ children }) {
         setId();
         setToken();
         setUserName();
-        setRoomsState();
-        setFriendsState();
-        setNotificationsState();
+        setRoomsState([]);
+        setFriendsState([]);
+        setNotificationsState([]);
     }
 
     const value = {

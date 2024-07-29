@@ -63,25 +63,32 @@ router.post('/acceptfriend/:id', async (req, res) => {
                 group: false
             });
 
-            const x = newRoom.save();
-
-            accountSchema.findByIdAndUpdate(
-                r.from,
-                { $push: { friends: r.account, rooms: x._id } }
-            ).then(() => { });
-
-            accountSchema.findByIdAndUpdate(
-                r.account,
-                { $push: { friends: r.from, rooms: x._id } }
-            ).then(() => { });
-
-
-
+            newRoom.save().then((x) => {
+                accountSchema.findByIdAndUpdate(
+                    r.from,
+                    { $push: { friends: r.account, rooms: x._id } }
+                ).then(() => { });
+    
+                accountSchema.findByIdAndUpdate(
+                    r.account,
+                    { $push: { friends: r.from, rooms: x._id } }
+                ).then(() => { });
+            });
         });
 
         await notificationSchema.findByIdAndDelete(req.params.id);
         return res.json({ message: 'Friend Added' });
     } catch (err) {
+        return res.json({ message: err.message });
+    }
+});
+
+router.delete('/:id', async (req, res) => {
+    try {
+        await notificationSchema.findByIdAndDelete(req.params.id);
+
+        return res.json({ message: 'Deleted Notification' });
+    } catch(err) {
         return res.json({ message: err.message });
     }
 });

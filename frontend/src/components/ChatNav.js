@@ -4,6 +4,7 @@ import axios from 'axios';
 import '../css/chatNav.css';
 
 import CreateRoomPopUp from "../components/CreateRoomPopUp.js";
+import SearchPopUp from "../components/SearchPopUp.js";
 import { UserContext } from '../context/userContext.js';
 
 import menuIcon from '../images/menuIcon.png';
@@ -14,6 +15,8 @@ const serverURL = process.env.REACT_APP_BACKEND_URL;
 function ChatNav({ viewRoom, rooms, socketTest }) {
     const userContext = useContext(UserContext);
     const [popup, setPopup] = useState(false);
+    const [findPopup, setFindPopup] = useState(false);
+    const [roomType, setRoomType] = useState(true);
 
     // Clear Messages ** Delete Later **
     async function clearDB() {
@@ -23,12 +26,19 @@ function ChatNav({ viewRoom, rooms, socketTest }) {
             });
     }
 
-    // Toggle
+    // Toggles
     function togglePopup() {
         if (popup) setPopup(false); else setPopup(true);
+        if (findPopup) setFindPopup(false);
     }
 
-    // pop up
+    function toggleRoomPopup(isRoom) {
+        if (isRoom) setRoomType(isRoom);
+        if (findPopup) setFindPopup(false); else setFindPopup(true);
+        if (popup) setPopup(false);
+    }
+
+    // Create Room
     async function createRoom(name, visability) {
         let newRoom = {
             name: name,
@@ -54,21 +64,50 @@ function ChatNav({ viewRoom, rooms, socketTest }) {
 
     }
 
+
+
     // Remove Room/Friend
     function removeRoom(room, type) {
         let str;
         if (type === 'friend') {
-            str = "Leave Room " + room.userName + "?";
+            str = "Remove Friend " + room.userName + "?";
         } else {
             str = "Leave Room " + room.name + "?"
         }
         let answer = window.confirm(str);
         if (answer) {
             try {
-                axios.delete(
-                    `${serverURL}/rooms/${room._id}`,
-                    { headers: { Authorization: `bearer ${userContext.token}` } }
-                );
+                // If removing friend, delete private room and update
+                if (type === 'friend') {
+                    axios.delete(
+                        `${serverURL}/rooms/${room._id}`,
+                        { headers: { Authorization: `bearer ${userContext.token}` } }
+                    );
+
+                    let newList = [...userContext.friends];
+                    userContext.friends.forEach((friend, i) => {
+                        if (friend._id === room._id) {
+                            newList.splice(i, 1);
+                        }
+                    });
+
+                    userContext.setFriends([...newList]);
+                } else {
+                    axios.delete(
+                        `${serverURL}/authAccounts/leaveRoom/${room._id}`,
+                        { headers: { Authorization: `bearer ${userContext.token}` } }
+                    ).then((res) => {
+                        let newArr = [...userContext.rooms];
+
+                        newArr.forEach((r, i) => {
+                            if (r._id === room._id) {
+                                newArr.splice(i, 1);
+                            }
+                        });
+
+                        userContext.setRooms([...newArr]);
+                    });
+                }
             } catch (err) {
                 console.log(err.message);
             }
@@ -77,6 +116,8 @@ function ChatNav({ viewRoom, rooms, socketTest }) {
 
     return (<>
         {popup && <CreateRoomPopUp onCreate={createRoom} onClose={togglePopup} />}
+        {findPopup && <SearchPopUp isRoom={roomType} onClose={toggleRoomPopup} />}
+
         <div className="col-md-4 col-lg-2 sideNav chatNavContainer">
             <p className="navTitle">Your Rooms</p>
             <div className="roomsDiv">
@@ -84,9 +125,18 @@ function ChatNav({ viewRoom, rooms, socketTest }) {
                 {userContext.rooms && userContext.rooms.map((room) => {
                     return <button onClick={viewRoom.bind(this, room)} key={room._id} className='chatNavButton'>
                         {room.name}
+                        <div onClick={(e) => {
+                            e.stopPropagation();
+                            removeRoom(room, 'room');
+                        }}>
+                            <img src={dotsIcon} className="dotsIcon" width="30px" />
+                        </div>
                     </button>
                 })}
             </div>
+            <button onClick={toggleRoomPopup.bind(this, true)} className="chatNavButton">
+                Find Rooms
+            </button>
             <button onClick={togglePopup} className="chatNavButton">
                 Create Room
             </button>
@@ -105,7 +155,7 @@ function ChatNav({ viewRoom, rooms, socketTest }) {
                     </div>
                 })}
             </div>
-            <button onClick={togglePopup} className="chatNavButton">
+            <button onClick={toggleRoomPopup.bind(this, false)} className="chatNavButton">
                 Add Friend
             </button>
 

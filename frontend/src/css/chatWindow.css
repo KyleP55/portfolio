@@ -17,11 +17,13 @@
 
 .messageText {
     margin: 0;
+    caret-color: transparent;
 }
 
 .senderText {
     margin: 0;
     font-size: 12px;
+    caret-color: transparent;
 }
 
 /* Other Stuff */
@@ -72,4 +74,5 @@
     transform: translate(-50%, -50%);
     font-size: 38;
     font-weight: bold;
+    caret-color: transparent;
 }

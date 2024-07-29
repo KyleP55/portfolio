@@ -40,6 +40,24 @@ function NotificationsPopUp({ closeNotifications }) {
                                 ).then((res) => {
                                     userContext.setFriends([...res.data]);
                                 });
+
+                                // Send friend accepted notification
+                                let info = {
+                                    target: name,
+                                    type: 'Accepted Friend Request',
+                                    from: userContext.id,
+                                    message: name + " accepted your friend request!"
+                                }
+
+                                axios.post(
+                                    `${serverURL}/notifications/`,
+                                    info,
+                                    {
+                                        headers: { Authorization: "bearer " + userContext.token }
+                                    }
+                                ).then((res) => {
+                                    socket.emit('sendNotification', info);
+                                });
                             } catch (err) {
                                 console.log(err.message);
                             }

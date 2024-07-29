@@ -37,6 +37,49 @@ router.get('/roomsfriends', async (req, res) => {
     }
 });
 
+// Join Room
+router.post('/joinRoom', async (req, res) => {
+    try {
+        const roomsList = await accountSchema.findByIdAndUpdate(
+            req.body._id,
+            { $push: { rooms: req.body.roomID }},
+            { new: true }
+        );
+
+        const room = await roomSchema.findById(req.body.roomID);
+
+        console.log(room)
+        return res.json(room);
+
+    } catch(err) {
+        return res.json({ message: err.message });
+    }
+});
+
+// Leave Room
+router.delete('/leaveRoom/:id', async (req, res) => {
+    console.log(req.userData.id)
+    try {
+        let updatedRooms = await accountSchema.findById(req.userData.id);
+        if (!updatedRooms) return res.json({ message: "Account not found" });
+
+        updatedRooms.rooms.forEach((r, i) => {
+            if (r === req.params.id) updatedRooms.rooms.splice(i, 1);
+        });
+
+        await accountSchema.findByIdAndUpdate(
+            req.userData.id,
+            { rooms: [...updatedRooms.rooms]},
+            { new: true }
+        ).then((r) => {
+            return res.json(r.rooms);
+        });
+    } catch(err) {
+        console.log(err.message)
+        return res.json({ message: err.message });
+    }
+});
+
 // Add Friend
 router.post('/friends', async (req, res) => {
     try {
