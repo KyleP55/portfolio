@@ -1,6 +1,7 @@
 import { createContext, useState } from "react";
 import axios from "axios";
 import { socket } from "../util/socket";
+import Cookies from "js-cookie";
 
 const serverURL = process.env.REACT_APP_BACKEND_URL;
 
@@ -11,10 +12,12 @@ export const UserContext = createContext({
     rooms: [],
     friends: [],
     notifications: [],
+    friendsOnline: [],
     setUser: (_id, _token, _userName, _rooms, _friends) => { },
     setRooms: (rooms) => { },
     setFriends: (friends) => { },
     setNotifications: (newNotification) => { },
+    setFriendsOnline: (id, staus) => { },
     logOut: () => { }
 });
 
@@ -24,6 +27,7 @@ function UserContextProvider({ children }) {
     const [userName, setUserName] = useState(null);
     const [rooms, setRoomsState] = useState([]);
     const [friends, setFriendsState] = useState([]);
+    const [friendsOnline, setFriendsOnlineState] = useState([]);
     const [notifications, setNotificationsState] = useState([]);
 
     async function setUser(_id, _token, _userName, _email, _rooms, _friends) {
@@ -31,7 +35,16 @@ function UserContextProvider({ children }) {
         setToken(_token);
         setUserName(_userName);
 
+
+        let sID = Cookies.get('sSID');
+        let auth = {
+            userID: _id,
+            userName: _userName,
+            sessionID: sID
+        }
+
         socket.connect();
+        socket.emit('auth', auth);
 
         try {
             // Get Rooms
@@ -54,7 +67,9 @@ function UserContextProvider({ children }) {
                 }
             ).then((res) => {
                 res.data.forEach((friend) => {
+                    friend.online = false;
                     socket.emit('joinRoom', friend._id);
+                    setFriendsOnlineState([...friendsOnline, [friend.friendID, false]]);
                 });
                 setFriendsState([...res.data]);
             });
@@ -84,6 +99,18 @@ function UserContextProvider({ children }) {
         setNotificationsState([...newNotification]);
     }
 
+    function setFriendsOnline(id, status) {
+        let arr = [...friends];
+        arr.forEach((f, i) => {
+            console.log('matching ' + f[0] + ' to ' + id)
+            if (f.friendID === id) {
+                arr[i].online = status;
+            }
+        });
+
+        setFriendsState([...friends])
+    }
+
     function logOut() {
         setId();
         setToken();
@@ -91,6 +118,7 @@ function UserContextProvider({ children }) {
         setRoomsState([]);
         setFriendsState([]);
         setNotificationsState([]);
+        setFriendsOnlineState([]);
     }
 
     const value = {
@@ -100,10 +128,12 @@ function UserContextProvider({ children }) {
         rooms: rooms,
         friends: friends,
         notifications: notifications,
+        friendsOnline: friendsOnline,
         setUser: setUser,
         setRooms: setRooms,
         setFriends: setFriends,
         setNotifications: setNotifications,
+        setFriendsOnline: setFriendsOnline,
         logOut: logOut
     }
 

@@ -3,6 +3,11 @@ class InMemorySessionStore {
         this.sessions = new Map();
     }
 
+    // Key: AccountId
+    // socketID: 
+    // userName: 
+    // sessionID:
+
     findSession(id) {
         return this.sessions.get(id);
     }
@@ -16,9 +21,11 @@ class InMemorySessionStore {
     }
 
     findSessionBySocketID(sID) {
-        for (let [key, value] of this.sessions.entries()) {
-            if (value.socketID === sID) {
-                return key;
+        if (sID) {
+            for (let [key, value] of this.sessions.entries()) {
+                if (value.socketID === sID) {
+                    return key;
+                }
             }
         }
     }

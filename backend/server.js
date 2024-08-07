@@ -47,8 +47,6 @@ server.listen(port, () => {
 io.on('connection', (socket) => {
     console.log('connected');
 
-    io.to(socket.id).emit('joinRooms');
-
     socket.on('auth', (auth) => {
         // Check if account is connected elsewhere
         let check = sessionStore.findSession(auth.userID);
@@ -93,9 +91,24 @@ io.on('connection', (socket) => {
         showAllSockets();
     });
 
+    io.to(socket.id).emit('joinRooms');
+
     socket.on('joinRoom', (roomId) => {
         socket.join(roomId);
+        const userId = sessionStore.findSessionBySocketID(socket.id);
+        console.log('id: ' + socket.id)
+        console.log('found: ' + userId)
+        io.to(roomId).emit('joined', userId);
         console.log(`Joined ${roomId}`);
+    });
+
+    socket.on('leaveRoom', (roomId) => {
+        socket.leave(roomId);
+    });
+
+    socket.on('removeRoom', (roomId) => {
+        io.to(roomId).emit('roomRemoved', roomId);
+        io.socketsLeave(roomId);
     });
 
     socket.on('sendMessage', (roomId, message) => {
@@ -117,7 +130,7 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         //console.log('should be removing', socket.id);
         let id = sessionStore.findSessionBySocketID(socket.id);
-        //console.log('found', id)
+        console.log('found', id)
         sessionStore.deleteSession(id);
         console.log('disconnected');
     });

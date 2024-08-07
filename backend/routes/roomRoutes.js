@@ -3,10 +3,10 @@ const router = express.Router();
 const roomSchema = require('../models/RoomSchema.js');
 const messageSchema = require('../models/MessageSchema.js');
 const accountSchema = require('../models/AccountSchema.js');
+const notificationSchema = require('../models/NotificationSchema.js');
 
 // Add Room
 router.post('/', async (req, res) => {
-    console.log(req.body)
     try {
         const newRoom = new roomSchema({
             name: req.body.name,
@@ -16,10 +16,16 @@ router.post('/', async (req, res) => {
             owner: req.body.owner
         });
 
-        await newRoom.save()
-            .then((result) => {
-                return res.json(result);
-            })
+
+        const result = await newRoom.save();
+        delete result.password
+
+        await accountSchema.findByIdAndUpdate(
+            req.body.owner,
+            { $push: { rooms: result._id } }
+        );
+
+        return res.json(result);
     } catch (err) {
         return res.json({ message: err.message });
     }
@@ -33,7 +39,7 @@ router.get('/public', async (req, res) => {
         });
 
         return res.json(list);
-    } catch(err) {
+    } catch (err) {
         return res.json(err.message);
     }
 });
@@ -46,10 +52,37 @@ router.get('/search/:name', async (req, res) => {
             name: name
         });
 
-        if (room) return res.json(room);
+        if (room) {
+            // Join if public
+            // if (room.public == true) {
 
-        return res.json({ message: 'No Rooms Found' });
-    } catch(err) {
+            //     await accountSchema.findByIdAndUpdate(
+            //         { _id: req.userData.id },
+            //         { $push: { rooms: room._id } },
+            //         { new: true },
+            //         { rooms: 1 }
+            //     ).then((r) => {
+            //         return res.json({ message: 'Joined Room' });
+            //     });
+            // }
+
+            return res.json({ message: 'Joined Room' });
+
+            // Send request to owner if private
+            const newNotification = new notificationSchema({
+                account: room.owner,
+                type: 'Join Room Request',
+                message: req.userData.userName + ' would like to join your private room ' + name,
+                from: req.userData.id
+            })
+
+            await newNotification.save();
+
+            return res.json({ message: 'Request Sent' });
+        }
+
+        return res.json({ errorMessage: 'No Rooms Found' });
+    } catch (err) {
         return res.json(err.message);
     }
 });
@@ -60,10 +93,19 @@ router.get('/list', async (req, res) => {
         let rooms = req.query.rooms;
 
         if (rooms) {
-            const list = await roomSchema.find({
-                _id: { $in: rooms },
-                group: true
-            });
+            const list = await roomSchema.find(
+                {
+                    _id: { $in: rooms },
+                    group: true
+                },
+                {
+                    _id: 1,
+                    group: 1,
+                    name: 1,
+                    public: 1,
+                    owner: 1
+                }
+            );
 
             return res.json(list);
         } else {
@@ -78,17 +120,18 @@ router.get('/list', async (req, res) => {
 router.delete('/:id', async (req, res) => {
     try {
         let removeID = req.params.id;
-        
+
         const room = await roomSchema.findById(removeID);
-        
+
         if (!room.group) {
+            // Private Convos
             let users = room.name.split("_");
-            console.log(users)
+
             let accounts = await accountSchema.find(
                 { _id: { $in: users } },
-                {friends: 1, rooms: 1, _id: 1, userName: 1}
+                { friends: 1, rooms: 1, _id: 1, userName: 1 }
             );
-            
+
             if (accounts) {
                 accounts.forEach((account) => {
                     let updatedFriendsList = [...account.friends];
@@ -107,19 +150,45 @@ router.delete('/:id', async (req, res) => {
 
                     accountSchema.updateOne(
                         { _id: account._id },
-                        { 
-                            friends: [...updatedFriendsList], 
-                            rooms: [...updatedRoomsList] 
+                        {
+                            friends: [...updatedFriendsList],
+                            rooms: [...updatedRoomsList]
                         }
                     );
                 });
+
+                await roomSchema.findByIdAndDelete(removeID);
+                await messageSchema.deleteMany({ room: removeID });
             } else {
                 return res.json({ message: "Couldn't find account" });
             }
+        } else {
+            // Room Group
+            if (room.owner === req.userData.id) {
+                await accountSchema.updateMany(
+                    { rooms: { $in: removeID } },
+                    { $pull: { rooms: removeID } }
+                );
+                console.log('deleeting')
+
+                await roomSchema.findByIdAndDelete(removeID)
+                    .then((a) => console.log(a))
+                await messageSchema.deleteMany({ room: removeID });
+            } else {
+                await accountSchema.findByIdAndUpdate(
+                    req.userData.id,
+                    { $pull: { rooms: removeID } }
+                );
+
+                console.log('deleeting1')
+            }
         }
 
-        await roomSchema.findByIdAndDelete(removeID);
-        await messageSchema.deleteMany({ room: removeID });
+        if (room.owner === req.userData.id) {
+
+        }
+
+        return res.json({ message: 'completed' });
 
     } catch (err) {
         return res.json({ message: err.message });

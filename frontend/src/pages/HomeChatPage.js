@@ -13,7 +13,6 @@ const serverURL = process.env.REACT_APP_BACKEND_URL;
 function HomeChatPage() {
     const nav = useNavigate();
     const userContext = useContext(UserContext);
-    const [socketLogOut, setSocketLogOut] = useOutletContext();
     const [socketConnect, setSocketConnect] = useState(false);
     const [currentRoom, setCurrentRoom] = useState();
     const [newChat, setNewChat] = useState();
@@ -69,6 +68,12 @@ function HomeChatPage() {
                 } catch (err) {
                     console.log(err.message);
                 }
+            });
+
+            // Friend Online/Offline
+            socket.on('joined', (userId) => {
+                userContext.setFriendsOnline(userId, true);
+                console.log(userId + ' joined')
             });
 
             // On Notification
@@ -134,10 +139,21 @@ function HomeChatPage() {
                 }
             });
         }
+        // Room was deleted
+        socket.on('roomRemoved', (roomId) => {
+            let newArr = [...userContext.rooms];
+            userContext.rooms.forEach((r, i) => {
+                if (r._id === roomId) newArr.splice(i, 1);
+            });
+            userContext.setRooms([...newArr]);
+
+            if (currentRoom && currentRoom._id === roomId) setCurrentRoom();
+        });
     }, [currentRoom]);
 
     // Change current room
     function changeRoom(newRoom) {
+        console.log(newRoom)
         setCurrentRoom(newRoom);
     }
 
@@ -203,7 +219,6 @@ function HomeChatPage() {
         <div className="row maxVH">
             <ChatNav
                 viewRoom={changeRoom}
-                rooms={userContext.rooms}
                 onCreate={createRoom}
                 friends={userContext.friends}
                 socketTest={socketTest}

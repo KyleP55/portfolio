@@ -42,7 +42,7 @@ router.post('/joinRoom', async (req, res) => {
     try {
         const roomsList = await accountSchema.findByIdAndUpdate(
             req.body._id,
-            { $push: { rooms: req.body.roomID }},
+            { $push: { rooms: req.body.roomID } },
             { new: true }
         );
 
@@ -51,7 +51,7 @@ router.post('/joinRoom', async (req, res) => {
         console.log(room)
         return res.json(room);
 
-    } catch(err) {
+    } catch (err) {
         return res.json({ message: err.message });
     }
 });
@@ -69,12 +69,12 @@ router.delete('/leaveRoom/:id', async (req, res) => {
 
         await accountSchema.findByIdAndUpdate(
             req.userData.id,
-            { rooms: [...updatedRooms.rooms]},
+            { rooms: [...updatedRooms.rooms] },
             { new: true }
         ).then((r) => {
             return res.json(r.rooms);
         });
-    } catch(err) {
+    } catch (err) {
         console.log(err.message)
         return res.json({ message: err.message });
     }
@@ -85,7 +85,8 @@ router.post('/friends', async (req, res) => {
     try {
         await accountSchema.findByIdAndUpdate(
             { _id: req.body.id },
-            { $push: { friends: req.body.name } }
+            { $push: { friends: req.body.name } },
+            { new: true }
         ).then((r) => {
             return res.status(200);
         })

@@ -38,7 +38,6 @@ function TopNavBar() {
                         let x = res.data;
                         userContext.setUser(x._id, token, x.userName, x.email, x.rooms, x.friends);
                         accountID = x._id;
-                        console.log(x)
                     });
             } catch (err) {
                 alert('Error Connected to Backend');

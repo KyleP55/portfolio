@@ -4,10 +4,6 @@ function CreateRoomPopUp({ onCreate, onClose }) {
     const [roomName, setRoomName] = useState('');
     const [visability, setVisability] = useState(true);
 
-    function onOptionChange(e) {
-        setVisability(e.target.value);
-    }
-
     return (<div className="popupContainer">
         <form>
             <label>Room Name</label>
@@ -24,8 +20,7 @@ function CreateRoomPopUp({ onCreate, onClose }) {
                         type='radio'
                         value={true}
                         name="visability"
-                        checked={visability === true}
-                        onChange={onOptionChange}
+                        onChange={() => setVisability(true)}
                     /> Public
                 </div>
                 <div>
@@ -33,8 +28,7 @@ function CreateRoomPopUp({ onCreate, onClose }) {
                         type='radio'
                         value={false}
                         name="visability"
-                        checked={visability === false}
-                        onChange={onOptionChange}
+                        onChange={() => setVisability(false)}
                     /> Private
                 </div>
             </div>
