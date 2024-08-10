@@ -83,7 +83,7 @@ io.on('connection', (socket) => {
             }
             // console.log("**SessionStores**")
             // x.forEach((i) => {
-            //     console.log(i);
+            //     console.log(i); 
             //     console.log(sessionStore.findSession(i))
             // })
         }
@@ -96,10 +96,24 @@ io.on('connection', (socket) => {
     socket.on('joinRoom', (roomId) => {
         socket.join(roomId);
         const userId = sessionStore.findSessionBySocketID(socket.id);
-        console.log('id: ' + socket.id)
-        console.log('found: ' + userId)
         io.to(roomId).emit('joined', userId);
-        console.log(`Joined ${roomId}`);
+    });
+
+    socket.on('checkOnline', (roomId) => {
+        console.log(roomId)
+        async function checkOnline() {
+            const socks = await io.in(roomId).fetchSockets();
+
+            socks.forEach((i) => {
+                if (i.id != socket.id) {
+                    const friendId = sessionStore.findSessionBySocketID(i.id);
+                    console.log('should be joining ' + friendId)
+                    io.to(roomId).emit('joined', friendId);
+                }
+            });
+        }
+
+        checkOnline();
     });
 
     socket.on('leaveRoom', (roomId) => {
@@ -127,10 +141,20 @@ io.on('connection', (socket) => {
         if (targetID) io.to(targetID.socketID).emit('updateFriendsTrigger');
     });
 
+    socket.on('disconnecting', () => {
+        console.log('Disconnecting');
+        for (const x of socket.rooms) {
+            if (x != socket.id) {
+                const userId = sessionStore.findSessionBySocketID(socket.id);
+                io.to(x).emit('leftRoom', userId);
+                console.log('leaving ' + x);
+            }
+        }
+    });
+
     socket.on('disconnect', () => {
         //console.log('should be removing', socket.id);
         let id = sessionStore.findSessionBySocketID(socket.id);
-        console.log('found', id)
         sessionStore.deleteSession(id);
         console.log('disconnected');
     });

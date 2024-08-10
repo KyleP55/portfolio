@@ -30,7 +30,7 @@ function HomeChatPage() {
     // Connect socket when logged in
     useEffect(() => {
         if (userContext.id && socket.connected) {
-            authSocket();
+            //authSocket();
 
             // Connection Error
             socket.on('connect_error', (err) => {
@@ -76,6 +76,11 @@ function HomeChatPage() {
                 console.log(userId + ' joined')
             });
 
+            socket.on('leftRoom', (userId) => {
+                userContext.setFriendsOnline(userId, false);
+                console.log(userId + ' left')
+            });
+
             // On Notification
             socket.on('notification', (info) => {
                 try {
@@ -116,9 +121,11 @@ function HomeChatPage() {
                 socket.emit('joinRoom', room._id);
             });
         }
+        console.log('size: ' + userContext.friends.length + ' and ' + socketConnect)
         if (userContext.friends.length > 0 && socketConnect) {
             userContext.friends.forEach((friend) => {
                 socket.emit('joinRoom', friend._id);
+                socket.emit('checkOnline', friend._id);
             });
         }
         setSocketConnect(false);

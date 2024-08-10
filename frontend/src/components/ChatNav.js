@@ -172,7 +172,6 @@ function ChatNav({ viewRoom, rooms, socketTest }) {
             <p className="navTitle">Your Friends</p>
             <div className="roomsDiv">
                 {userContext.friends && userContext.friends.map((friend, i) => {
-                    console.log(userContext.friendsOnline[i])
                     return <FriendButton
                         friend={friend}
                         status={userContext.friendsOnline[i][1]}
