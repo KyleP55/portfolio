@@ -69,6 +69,19 @@ function NotificationsPopUp({ closeNotifications }) {
                     console.log(err.message);
                 }
             }
+        } else {
+            axios.delete(
+                `${serverURL}/notifications/${userContext.notifications[index]._id}`,
+                { headers: { Authorization: 'bearer ' + userContext.token } }
+            ).then((res) => {
+                if (!res.data.errMessage) {
+                    let newArr = [...userContext.notifications];
+                    newArr.splice(index, 1);
+                    userContext.setNotifications([...newArr]);
+                } else {
+                    alert('Error Deleting Notification.');
+                }
+            });
         }
     }
 
