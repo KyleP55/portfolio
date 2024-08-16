@@ -174,7 +174,7 @@ function ChatNav({ viewRoom, rooms, socketTest }) {
                 {userContext.friends && userContext.friends.map((friend, i) => {
                     return <FriendButton
                         friend={friend}
-                        status={userContext.friendsOnline[i][1]}
+                        status={friend.online}
                         viewRoom={viewRoom}
                         removeRoom={removeRoom}
                         key={i}

@@ -60,7 +60,8 @@ function HomeChatPage() {
                                 params: { id: userContext.id }
                             }
                         ).then((res) => {
-                            userContext.setFriends([...res.data]);
+                            console.log(res)
+                            //userContext.setFriends([...res.data]);
                         });
                     }
 

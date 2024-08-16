@@ -129,6 +129,7 @@ router.get('/friends', async (req, res) => {
                         }
                     });
                 });
+                console.log(friendsList)
                 return res.json(friendsList);
             });
         })

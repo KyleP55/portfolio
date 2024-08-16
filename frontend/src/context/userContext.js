@@ -69,7 +69,6 @@ function UserContextProvider({ children }) {
                 res.data.forEach((friend) => {
                     friend.online = false;
                     socket.emit('joinRoom', friend._id);
-                    setFriendsOnlineState([...friendsOnline, [friend.friendID, false]]);
                     socket.emit('checkOnline', friend._id);
                 });
                 setFriendsState([...res.data]);
