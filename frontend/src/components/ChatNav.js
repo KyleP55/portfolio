@@ -15,6 +15,8 @@ import FriendButton from './FriendButton.js';
 
 const serverURL = process.env.REACT_APP_BACKEND_URL;
 
+let navShow = false;
+
 function ChatNav({ viewRoom, rooms, socketTest }) {
     const userContext = useContext(UserContext);
     const [popup, setPopup] = useState(false);
@@ -68,7 +70,17 @@ function ChatNav({ viewRoom, rooms, socketTest }) {
 
     // Toggle Mobile Nav
     function toggleMobileNav() {
+        let navList = document.getElementById("sideNavList");
+        let button = document.getElementById("chatNavButton");
+        if (navShow) {
+            navList.style.width = "0%";
+            button.style.left = "0%";
+        } else {
+            navList.style.width = "85%";
+            button.style.left = "85%";
+        }
 
+        navShow = !navShow;
     }
 
 
@@ -148,7 +160,7 @@ function ChatNav({ viewRoom, rooms, socketTest }) {
         {popup && <CreateRoomPopUp onCreate={createRoom} onClose={togglePopup} />}
         {findPopup && <SearchPopUp isRoom={roomType} onClose={toggleRoomPopup} />}
 
-        <div className="col-md-4 col-lg-2 sideNav chatNavContainer">
+        <div className="col-md-4 col-lg-2 sideNav chatNavContainer maxVH" id="sideNavList">
             <p className="navTitle">Your Rooms</p>
             <div className="roomsDiv">
                 {userContext.rooms && userContext.rooms.map((room, i) => {
@@ -189,7 +201,7 @@ function ChatNav({ viewRoom, rooms, socketTest }) {
                 Clear All Messages
             </button>
         </div>
-        <div className="mobileChatNavButton">
+        <div className="mobileChatNavButton" id="chatNavButton" onClick={toggleMobileNav}>
             <img src={menuIcon} width="32px" />
         </div>
     </>);

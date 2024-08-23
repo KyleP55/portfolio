@@ -92,7 +92,11 @@ function ChatWindow({ room, onSend, update, sendFriendRequest }) {
                 </button>
             </div>
             <div className="chatWindow hPad8" id="messageScroll">
-                {room && <h2>{room.name}</h2>}
+                {room && 
+                    <div className="headerBar">
+                        <h2>{room.name}</h2>
+                    </div>
+                }
                 {room && chatMessages && chatMessages.map((i) => {
                     return < ChatBubble
                         info={i}
