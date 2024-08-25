@@ -105,6 +105,9 @@ function TopNavBar() {
     // Links depending on signed in or not
     const unauthed = <>
         {logInWindow && <LogInPopUp toggle={toggleWindow} />}
+        <Link to="/credits" className="accountText">
+            Credits
+        </Link>
         <a onClick={toggleWindow} className="accountText">
             Log In
         </a>
@@ -115,6 +118,9 @@ function TopNavBar() {
 
     const authed = <>
         <p className="accountText">Welcome Back {userContext.userName}!</p>
+        <Link to="/credits" className="accountText">
+            Credits
+        </Link>
         <a onClick={logOut} className="accountText">
             Log Out
         </a>
@@ -137,18 +143,24 @@ function TopNavBar() {
         <a onClick={mobileNavFunc.bind(this, 0)} className="">
             Log In
         </a>
-        <a onClick={mobileNavFunc.bind(this, 0)} className="">
+        <Link to="/createAccount" className="">
             Create Account
-        </a>
+        </Link>
+        <Link to="/credits" >
+            Credits
+        </Link>
     </>
 
     const mobileAuthed = <>
         <a onClick={mobileNavFunc.bind(this, 0)} className="">
             Log Out
         </a>
-        <a onClick={mobileNavFunc.bind(this, 0)} className="">
+        <Link to="/account/login" className="">
             My Account
-        </a>
+        </Link>
+        <Link to="/credits" className="">
+            Credits
+        </Link>
     </>
 
     // JSX

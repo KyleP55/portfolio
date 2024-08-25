@@ -5,6 +5,7 @@ import LogInPage from './pages/LogInPage';
 import HomeChatPage from "./pages/HomeChatPage";
 import TopNavBar from './components/TopNavBar';
 import CreateAccountPage from './pages/CreateAccountPage';
+import CreditsPage from './pages/Credits';
 
 import "./css/main.css";
 
@@ -17,6 +18,7 @@ function App() {
             <Route index element={<LogInPage />} />
             <Route path="/home" element={<HomeChatPage />} />
             <Route path="/createAccount" element={<CreateAccountPage />} />
+            <Route path="/credits" element={<CreditsPage />} />
           </Route>
         </Routes>
       </BrowserRouter>
