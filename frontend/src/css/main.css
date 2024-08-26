@@ -14,3 +14,14 @@ body {
     text-align: center;
 }
 
+.marTop {
+    margin-top: 8px;
+}
+
+.fullmar {
+    margin: 8px;
+}
+
+.inlineBlock {
+    display: inline-block;
+}

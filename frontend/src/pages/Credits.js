@@ -4,8 +4,8 @@ import accountIcon from '../images/accountIcon.png';
 import notificationIcon from '../images/notificationIcon.png';
 
 function CreditsPage() {
-    return (<div>
-        <div>
+    return (<div className="col-lg-4 col-md-8 col-xs-12 mx-auto">
+        <div className="fullmar">
             <h2>Welcome!</h2>
             <p>This is a chat app in progress that still has bugs and features being worked on.</p>
             <h2>To Do:</h2>

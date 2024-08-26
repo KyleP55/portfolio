@@ -71,7 +71,7 @@ function TopNavBar() {
         if (mobileDropDown) {
             dropDown.style.height = "0px";
         } else {
-            dropDown.style.height = "120px";
+            dropDown.style.height = userContext.id ? "160px" : "120px";
         }
 
         mobileDropDown = !mobileDropDown;
@@ -94,12 +94,14 @@ function TopNavBar() {
         document.getElementById('topNavMenu').style.height = "0px";
         if (userContext.id) {
             if (option == 0) logOut();
-            if (option == 1) console.log('my account');
+            if (option == 1) alert('My account page coming soon!');
+            if (option == 2) nav('/credits');
+            if (option == 3) onNotifications();
         } else {
-            if (option == 0) console.log('goto log in page');
-            if (option == 1) window.open("/createAccount");
+            if (option == 0) nav('/');
+            if (option == 1) nav("/createAccount");
+            if (option == 2) nav('/credits');
         }
-        if (option == 2) console.log('notification drop down');
     }
 
     // Links depending on signed in or not
@@ -143,31 +145,34 @@ function TopNavBar() {
         <a onClick={mobileNavFunc.bind(this, 0)} className="">
             Log In
         </a>
-        <Link to="/createAccount" className="">
+        <a onClick={mobileNavFunc.bind(this, 1)} className="">
             Create Account
-        </Link>
-        <Link to="/credits" >
+        </a>
+        <a onClick={mobileNavFunc.bind(this, 2)} className="">
             Credits
-        </Link>
+        </a>
     </>
 
     const mobileAuthed = <>
         <a onClick={mobileNavFunc.bind(this, 0)} className="">
             Log Out
         </a>
-        <Link to="/account/login" className="">
+        <a onClick={mobileNavFunc.bind(this, 1)} className="">
             My Account
-        </Link>
-        <Link to="/credits" className="">
+        </a>
+        <a onClick={mobileNavFunc.bind(this, 2)} className="">
             Credits
-        </Link>
+        </a>
+        <a onClick={mobileNavFunc.bind(this, 3)} className="">
+            Notifications
+        </a>
     </>
 
     // JSX
     return (<>
         {/* Desktop/Tablet */}
         <div className="header">
-            <div className="logo">
+            <div className="logo" onClick={() => nav('/')}>
                 <img src={logo} alt="Chat Icon" height="44" className="logoIcon" />
                 <h3 className="nameText">Chatty App!</h3>
             </div>
@@ -185,7 +190,7 @@ function TopNavBar() {
             <h3 className="nameText">Chatty App!</h3>
             <div id="menuIcon" onClick={onMobileNavClick}>
                 <img src={accountIcon} alt="Menu Icon" height="38" className="menuIcon" />
-                {userContext.notifications > 0 &&
+                {userContext.notifications.length > 0 &&
                     <div className="notificationNumber">
                         {userContext.notifications.length}
                     </div>
@@ -196,9 +201,6 @@ function TopNavBar() {
         <div className="topNavMenu" id="topNavMenu">
             {!userContext.id && mobileUnauthed}
             {userContext.id && mobileAuthed}
-            <a onClick={mobileNavFunc.bind(this, 0)} className="">
-                Notifications
-            </a>
         </div>
         <NotificationsPopUp closeNotifications={onNotifications} />
         <Outlet context={[socketLogOut, setSocketLogOut]} />

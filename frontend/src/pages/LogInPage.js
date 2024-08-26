@@ -42,7 +42,7 @@ function LogInPage() {
     return (<>
         <div className="container-fluid">
             <div className="row">
-                <div className="col-lg-4 col-md-8 col-xs-12 mx-auto">
+                <div className="col-lg-4 col-md-8 col-xs-12 mx-auto marTop">
                     <h2 className="center">Welcome to my project!</h2>
                     <p className="center">Please check out the credits page for more details and credits for the icons used!</p>
                     <div className="formContainer">
