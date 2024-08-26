@@ -1,4 +1,5 @@
 import { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import { emailVali, passVali, passMatch, userVali } from '../util/formValidation.js';
@@ -7,6 +8,7 @@ import { UserContext } from '../context/userContext.js'
 const serverURL = process.env.REACT_APP_BACKEND_URL;
 
 function AccountCreationForm({ created }) {
+    const nav = useNavigate();
     const userContext = useContext(UserContext);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -56,6 +58,7 @@ function AccountCreationForm({ created }) {
     return (<>
         <div className="row justify-content-center">
             <div className="col-xs-12 col-md-8 col-lg-6">
+            <p className="center"><b>Note:</b> This server does <b>NOT</b> use https and does not recommend using real passwords or emails. This website does not require a valid email and does not have any password requirements.</p>
                 <form className="formContainer">
                     <h1>Create Account!</h1>
 
@@ -98,7 +101,7 @@ function AccountCreationForm({ created }) {
 
                     <div className="formButtonContainer">
                         <button onClick={onSubmitHandler} className="button">Create</button>
-                        <button type="reset" className="button cancel">Back</button>
+                        <button onClick={() => nav('/')} className="button cancel">Back</button>
                     </div>
                 </form>
             </div>

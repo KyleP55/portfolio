@@ -11,8 +11,9 @@ const { InMemorySessionStore } = require('./functions/sessonStore.js');
 const sessionStore = new InMemorySessionStore();
 
 const frontendUrl = process.env.FRONTEND_URL || 'http://127.0.0.1:3000';
+console.log("Front end = : " + frontendUrl)
 //process.env.DATABASE_URL || 
-const url = process.env.DATABASE_URL || 'mongodb://127.0.0.1:27017/alChatApp';
+const url = process.env.DATABASE_URL || 'mongodb://127.0.0.1:27017/ChattyApp';
 const port = process.env.PORT || 5000;
 
 const accountRouter = require("./routes/accountRoutes.js");
@@ -26,7 +27,8 @@ const notificationRouter = require("./routes/notificationRoutes.js");
 const io = require('socket.io')(server, {
     cors: {
         origin: frontendUrl,
-        allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+        allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+        methods: ["GET", "POST", "DELETE", "OPTIONS"]
     }
 });
 
@@ -166,6 +168,7 @@ app.use(express.json());
 const corsOptions = {
     origin: frontendUrl,
     allowedHeaders: ['Access-Control-Allow-Headers', 'Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
+    methods: "GET,POST,DELETE,OPTIONS",
     preflightContinue: false
 }
 app.use(cors(corsOptions));
