@@ -10,7 +10,8 @@
 }
 
 .maxVH {
-    height: calc(100vh - 60px);
+    height: 100vh;
+    height: calc(var(--vh, 1vh) * 100 - 60px);
 }
 
 .chatNavButton {

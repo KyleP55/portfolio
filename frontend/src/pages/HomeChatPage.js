@@ -223,7 +223,7 @@ function HomeChatPage() {
         }
     }
 
-    return (<div className="container-fluid">
+    return (<div className="container-fluid maxVH">
         <div className="row maxVH">
             <ChatNav
                 viewRoom={changeRoom}

@@ -8,6 +8,9 @@ import CreateAccountPage from './pages/CreateAccountPage';
 import CreditsPage from './pages/Credits';
 
 import "./css/main.css";
+import mhm from "./util/mobileHeightManager.js";
+
+mhm();
 
 function App() {
   return (

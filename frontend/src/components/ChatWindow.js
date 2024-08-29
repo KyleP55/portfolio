@@ -72,6 +72,16 @@ function ChatWindow({ room, onSend, update, sendFriendRequest }) {
         element.scrollTop = element.scrollHeight;
     }, [chatMessages]);
 
+    useEffect(() => {
+        const element = document.getElementById("messageInput");
+        if (room) {
+            element.removeAttribute("disabled");
+            alert('removed')
+        } else {
+            element.setAttribute("disabled", "disabled");
+        }
+    }, [room]);
+
     return (<>
         <div className="col-sm-12 col-md-8 col-lg-10 p-0 maxVH chatContainer">
             <div className="messageBox">
@@ -86,6 +96,7 @@ function ChatWindow({ room, onSend, update, sendFriendRequest }) {
                     onKeyDown={(e) => {
                         if (e.key === "Enter") onSendHandler();
                     }}
+                    disabled
                 />
                 <button onClick={onSendHandler}>
                     Send
