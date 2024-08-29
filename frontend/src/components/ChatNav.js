@@ -23,16 +23,6 @@ function ChatNav({ viewRoom, rooms, socketTest }) {
     const [findPopup, setFindPopup] = useState(false);
     const [roomType, setRoomType] = useState(true);
 
-    // Clear Messages ** Delete Later **
-    async function clearDB() {
-        // axios.delete(`${serverURL}/messages/`)
-        //     .then(() => {
-        //         alert('should be deleted');
-        //     });
-        console.log(userContext.friendsOnline)
-        socket.emit('showall');
-    }
-
     // Toggles
     function togglePopup() {
         if (popup) setPopup(false); else setPopup(true);
@@ -195,10 +185,6 @@ function ChatNav({ viewRoom, rooms, socketTest }) {
             </div>
             <button onClick={toggleRoomPopup.bind(this, false)} className="chatNavButton">
                 Add Friend
-            </button>
-
-            <button onClick={clearDB}>
-                Clear All Messages
             </button>
         </div>
         <div className="mobileChatNavButton" id="chatNavButton" onClick={toggleMobileNav}>

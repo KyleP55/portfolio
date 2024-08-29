@@ -17,18 +17,25 @@
     color: "#000";
 }
 .accountText {
-    height: 100%;
+    height: 80%;
     display: flex;
     align-items: center;
     margin-left: 8px;
     margin-right: 8px;
     margin-bottom: 0px;
     caret-color: transparent;
+    border-bottom: 1px solid rgba(4, 170, 109, 0);
+    transition: 0.5s;
 }
+
 a {
     text-decoration: none;
     color: #000;
     cursor: pointer;
+}
+
+a.accountText:hover {
+    border-bottom: 1px solid rgba(4, 170, 109, .8);
 }
 
 .logo{

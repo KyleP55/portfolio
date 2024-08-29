@@ -110,9 +110,9 @@ function TopNavBar() {
         <Link to="/credits" className="accountText">
             Credits
         </Link>
-        <a onClick={toggleWindow} className="accountText">
+        <Link to="/credits" className="accountText">
             Log In
-        </a>
+        </Link>
         <Link to="/createAccount" className="accountText">
             Create Account
         </Link>
