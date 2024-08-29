@@ -76,7 +76,6 @@ function ChatWindow({ room, onSend, update, sendFriendRequest }) {
         const element = document.getElementById("messageInput");
         if (room) {
             element.removeAttribute("disabled");
-            alert('removed')
         } else {
             element.setAttribute("disabled", "disabled");
         }
