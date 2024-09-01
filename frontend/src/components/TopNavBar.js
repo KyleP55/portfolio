@@ -12,6 +12,7 @@ import logo from '../images/chatIcon.png';
 import accountIcon from '../images/accountIcon.png';
 import notificationIcon from '../images/notificationIcon.png';
 import NotificationsPopUp from "./NotificationsPopUp.js";
+import Modal, { callModal } from "./Modal.js";
 
 const serverURL = process.env.REACT_APP_BACKEND_URL;
 let mobileDropDown = false;

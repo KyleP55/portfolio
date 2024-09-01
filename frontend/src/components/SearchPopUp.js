@@ -122,7 +122,7 @@ function SearchPopUp({ isRoom, onClose }) {
         value={searchText}
       />
       <div className="chatNavButton" onClick={searchRoom}>
-        <p>Search</p>
+        Search
       </div>
     </div>
   </>

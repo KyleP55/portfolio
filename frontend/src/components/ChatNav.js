@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 
 import '../css/chatNav.css';
@@ -158,6 +158,7 @@ function ChatNav({ viewRoom, rooms, socketTest }) {
                         info={room}
                         viewRoom={viewRoom}
                         removeRoom={removeRoom}
+                        closeNav={toggleMobileNav}
                         key={room._id}
                         n={i}
                     />
@@ -179,6 +180,7 @@ function ChatNav({ viewRoom, rooms, socketTest }) {
                         status={friend.online}
                         viewRoom={viewRoom}
                         removeRoom={removeRoom}
+                        closeNav={toggleMobileNav}
                         key={i}
                     />
                 })}

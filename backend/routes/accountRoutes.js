@@ -12,7 +12,7 @@ router.post('/createAccount', async (req, res) => {
         const b = req.body;
 
         // Check if email exists
-        const check = await accountSchema.find({ email: b.email });
+        const check = await accountSchema.find({ email: b.email.toLowerCase() });
         if (check[0]) return res.json({ message: "Email already linked to account." });
 
         // Create Account and Log in
@@ -20,7 +20,7 @@ router.post('/createAccount', async (req, res) => {
         const hashedPass = await bcrypt.hash(b.password, salt);
 
         const account = new accountSchema({
-            email: b.email,
+            email: b.email.toLowerCase(),
             password: hashedPass,
             userName: b.userName,
         });
@@ -42,7 +42,7 @@ router.post('/createAccount', async (req, res) => {
 // Log In
 router.post('/login', async (req, res) => {
     const b = req.body;
-    const account = await accountSchema.findOne({ email: b.email }, { email: 1, password: 1, userName: 1, _id: 1, rooms: 1, friends: 1 });
+    const account = await accountSchema.findOne({ email: b.email.toLowerCase() }, { email: 1, password: 1, userName: 1, _id: 1, rooms: 1, friends: 1 });
 
     if (account == undefined) return res.json({ message: "Email or Password Incorrect" });
 

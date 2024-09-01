@@ -3,7 +3,7 @@ import dotsIcon from '../images/dotsIcon.png';
 
 import { UserContext } from '../context/userContext';
 
-function FriendButton({ friend, viewRoom, removeRoom }) {
+function FriendButton({ friend, viewRoom, removeRoom, closeNav }) {
     const usercontext = useContext(UserContext);
 
     // Color on type of room
@@ -18,6 +18,7 @@ function FriendButton({ friend, viewRoom, removeRoom }) {
 
     function changeRoom() {
         viewRoom(friend);
+        closeNav();
     }
 
     return <div onClick={changeRoom} key={friend._id} className='chatNavButton' id={friend._id}>

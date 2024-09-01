@@ -6,11 +6,13 @@ import ChatBubble from "./ChatBubble";
 
 const serverURL = process.env.REACT_APP_BACKEND_URL;
 
+let oldHeight = window.innerHeight;
 
 function ChatWindow({ room, onSend, update, sendFriendRequest }) {
     const userContext = useContext(UserContext);
     const [message, setMessage] = useState('');
     const [chatMessages, setChatMessages] = useState();
+
 
     // Get Messages on Load
     useEffect(() => {
@@ -66,12 +68,21 @@ function ChatWindow({ room, onSend, update, sendFriendRequest }) {
         }
     }, [update]);
 
-    // Scroll to Bottom
+    // Scroll to Bottom on new chat
     useEffect(() => {
         const element = document.getElementById("messageScroll");
         element.scrollTop = element.scrollHeight;
     }, [chatMessages]);
 
+    window.addEventListener("resize", (e) => { 
+        let diff = oldHeight - window.innerHeight;
+        oldHeight = window.innerHeight;
+
+        const element = document.getElementById("messageScroll");
+        element.scrollTop = element.scrollTop + diff;
+      }); 
+
+    // Disable message input untill room is selected
     useEffect(() => {
         const element = document.getElementById("messageInput");
         if (room) {

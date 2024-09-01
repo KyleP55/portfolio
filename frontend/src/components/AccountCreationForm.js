@@ -20,23 +20,23 @@ function AccountCreationForm({ created }) {
     // Submit button
     async function onSubmitHandler(e) {
         e.preventDefault();
-        // const emailRes = await emailVali(email);
-        // const userRes = await userVali(name);
+        const emailRes = await emailVali(email);
+        const userRes = await userVali(name);
 
-        // // Check Validation/Set errors
-        // const newError = error.map((err, i) => {
-        //     if (i === 0) return (emailRes);
-        //     if (i === 1) return (passVali(password));
-        //     if (i === 2) return (passMatch(password, confirmPassword));
-        //     if (i === 3) return (userRes);
-        //     return (null);
-        // });
-        // setError(newError);
+        // Check Validation/Set errors
+        const newError = error.map((err, i) => {
+            if (i === 0) return (emailRes);
+            if (i === 1) return (passVali(password));
+            if (i === 2) return (passMatch(password, confirmPassword));
+            if (i === 3) return (userRes);
+            return (null);
+        });
+        setError(newError);
 
-        // // Check if any errors exists
-        // let errors = false;
-        // newError.forEach((i) => { if (i !== null) errors = true; });
-        // if (errors) return;
+        // Check if any errors exists
+        let errors = false;
+        newError.forEach((i) => { if (i !== null) errors = true; });
+        if (errors) return;
 
         // Submit New Account
         const info = {

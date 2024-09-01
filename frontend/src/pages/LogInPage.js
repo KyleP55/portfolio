@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from 'js-cookie';
@@ -6,6 +6,8 @@ import Cookies from 'js-cookie';
 import '../css/form.css'
 
 import { UserContext } from '../context/userContext';
+import Modal from "../components/Modal.js";
+
 const serverURL = process.env.REACT_APP_BACKEND_URL;
 
 function LogInPage() {
@@ -13,6 +15,7 @@ function LogInPage() {
     const nav = useNavigate();
     const [email, setEmail] = useState('');
     const [pass, setPass] = useState('');
+    const [modInfo, setModInfo] = useState([null, null]);
 
     async function onSubmit(e) {
         e.preventDefault();
@@ -39,7 +42,13 @@ function LogInPage() {
         }
     }
 
+    // useEffect(() => {
+    //     setModInfo(['Logging In...', 'Please wait while we log you in!']);
+    //     $("#exampleModal").modal('toggle');
+    // }, []);
+
     return (<>
+        {/* <Modal title={modInfo[0]} body={modInfo[1]} /> */}
         <div className="container-fluid">
             <div className="row">
                 <div className="col-lg-4 col-md-8 col-xs-12 mx-auto marTop">

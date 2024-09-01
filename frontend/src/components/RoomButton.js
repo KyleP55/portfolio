@@ -2,10 +2,11 @@ import { useEffect } from 'react';
 import dotsIcon from '../images/dotsIcon.png';
 import hideIcon from '../images/hide.png';
 
-function RoomButton({ info, viewRoom, removeRoom }) {
+function RoomButton({ info, viewRoom, removeRoom, closeNav }) {
 
     function changeRoom() {
         viewRoom(info);
+        closeNav();
     }
 
     return <button onClick={changeRoom} className='chatNavButton' id={info._id}>
