@@ -79,7 +79,7 @@ function ChatWindow({ room, onSend, update, sendFriendRequest }) {
         oldHeight = window.innerHeight;
 
         const element = document.getElementById("messageScroll");
-        element.scrollTop = element.scrollTop + diff;
+        if (element) element.scrollTop = element.scrollTop + diff;
       }); 
 
     // Disable message input untill room is selected
@@ -93,7 +93,7 @@ function ChatWindow({ room, onSend, update, sendFriendRequest }) {
     }, [room]);
 
     return (<>
-        <div className="col-sm-12 col-md-8 col-lg-10 p-0 maxVH chatContainer">
+        <div className="col-xs-12 col-sm-8 col-md-8 col-lg-10 p-0 maxVH chatContainer">
             <div className="messageBox">
                 <input
                     type="text"

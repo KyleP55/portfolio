@@ -17,6 +17,11 @@ const serverURL = process.env.REACT_APP_BACKEND_URL;
 
 let navShow = false;
 
+function isMobile() {
+const regex = /Mobi|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
+return regex.test(navigator.userAgent);
+}
+
 function ChatNav({ viewRoom, rooms, socketTest }) {
     const userContext = useContext(UserContext);
     const [popup, setPopup] = useState(false);
@@ -60,19 +65,22 @@ function ChatNav({ viewRoom, rooms, socketTest }) {
 
     // Toggle Mobile Nav
     function toggleMobileNav() {
-        let navList = document.getElementById("sideNavList");
-        let button = document.getElementById("chatNavButton");
-        if (navShow) {
-            navList.style.width = "0%";
-            button.style.left = "0%";
-        } else {
+        if (window.innerWidth <= 660) {
+
+            let navList = document.getElementById("sideNavList");
+            let button = document.getElementById("chatNavButton");
+            if (navShow) {
+                navList.style.width = "0%";
+                button.style.left = "0%";
+            } else {
             navList.style.width = "85%";
             button.style.left = "85%";
+            }
+            
+            navShow = !navShow;
         }
-
-        navShow = !navShow;
     }
-
+    
 
 
     // Remove Room/Friend
@@ -150,7 +158,7 @@ function ChatNav({ viewRoom, rooms, socketTest }) {
         {popup && <CreateRoomPopUp onCreate={createRoom} onClose={togglePopup} />}
         {findPopup && <SearchPopUp isRoom={roomType} onClose={toggleRoomPopup} />}
 
-        <div className="col-md-4 col-lg-2 sideNav chatNavContainer maxVH" id="sideNavList">
+        <div className="col-sm-4 col-md-4 col-lg-2 sideNav chatNavContainer maxVH" id="sideNavList">
             <p className="navTitle">Your Rooms</p>
             <div className="roomsDiv">
                 {userContext.rooms && userContext.rooms.map((room, i) => {

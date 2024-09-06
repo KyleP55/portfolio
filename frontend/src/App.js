@@ -9,6 +9,7 @@ import CreditsPage from './pages/Credits';
 
 import "./css/main.css";
 import mhm from "./util/mobileHeightManager.js";
+import LoginRD from './util/LoginRD.js';
 
 mhm();
 
@@ -18,8 +19,8 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<TopNavBar />}>
-            <Route index element={<LogInPage />} />
-            <Route path="/home" element={<HomeChatPage />} />
+            <Route index element={<LoginRD loginPage={true}><LogInPage /></LoginRD>} />
+            <Route path="/home" element={<LoginRD loginPage={false}><HomeChatPage /></LoginRD>} />
             <Route path="/createAccount" element={<CreateAccountPage />} />
             <Route path="/credits" element={<CreditsPage />} />
           </Route>

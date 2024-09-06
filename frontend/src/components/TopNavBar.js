@@ -185,10 +185,12 @@ function TopNavBar() {
         </div>
         {/* Mobile */}
         <div className="navHeader">
-            <div className="logo">
+            <div className="logo" onClick={() => nav('/')}>
                 <img src={logo} alt="Chat Icon" height="44" className="logoIcon" />
             </div>
-            <h3 className="nameText">Chatty App!</h3>
+            <div onClick={() => nav('/')}>
+                <h3 className="nameText">Chatty App!</h3>
+            </div>
             <div id="menuIcon" onClick={onMobileNavClick}>
                 <img src={accountIcon} alt="Menu Icon" height="38" className="menuIcon" />
                 {userContext.notifications.length > 0 &&
