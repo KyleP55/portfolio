@@ -13,7 +13,7 @@ router.post('/createAccount', async (req, res) => {
 
         // Check if email exists
         const check = await accountSchema.find({ email: b.email.toLowerCase() });
-        if (check[0]) return res.json({ message: "Email already linked to account." });
+        if (check[0]) return res.json({ errMessage: "Email already linked to account." });
 
         // Create Account and Log in
         const salt = await bcrypt.genSalt(10);
@@ -26,14 +26,13 @@ router.post('/createAccount', async (req, res) => {
         });
 
         const newAccount = await account.save();
-        console.log('created account');
 
         const sig = { id: newAccount._id, email: newAccount.email, userName: newAccount.userName };
         const accessToken = generateToken(sig);
 
-        console.log('signed token');
+        let info = { id: account._id, email: account.email, userName: account.userName, token: accessToken, rooms: account.rooms, friends: account.friends };
 
-        res.status(201).json({ token: accessToken });
+        res.status(201).json(info);
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
@@ -55,9 +54,9 @@ router.post('/login', async (req, res) => {
             let sig = { id: account._id, email: account.email, userName: account.userName };
             const accessToken = generateToken(sig);
 
-            sig = { id: account._id, email: account.email, userName: account.userName, token: accessToken, rooms: account.rooms, friends: account.friends };
+            let info = { id: account._id, email: account.email, userName: account.userName, token: accessToken, rooms: account.rooms, friends: account.friends };
 
-            return res.status(200).json(sig);
+            return res.status(200).json(info);
         } else {
             return res.json({ message: "Email or Password Incorrect" });
         }

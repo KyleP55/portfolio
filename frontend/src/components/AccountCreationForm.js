@@ -1,6 +1,7 @@
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Cookies from 'js-cookie';
 
 import { emailVali, passVali, passMatch, userVali } from '../util/formValidation.js';
 import { UserContext } from '../context/userContext.js'
@@ -31,7 +32,7 @@ function AccountCreationForm({ created }) {
             if (i === 3) return (userRes);
             return (null);
         });
-        setError(newError);
+        setError([...newError]);
 
         // Check if any errors exists
         let errors = false;
@@ -47,8 +48,14 @@ function AccountCreationForm({ created }) {
 
         try {
             await axios.post(serverURL + '/accounts/createAccount', info).then((res) => {
-                userContext.setUser(res.data.id, res.data.token, res.data.userName, email, ['66632d638777e339d560e413'], []);
-                created();
+                const x = res.data;
+                console.log(x);
+                userContext.setUser(x.id, x.token, x.userName, email, ['66632d638777e339d560e413'], []);
+
+                alert('Account Created!');
+
+                Cookies.set('token', x.token, { expires: 7 });
+                nav("/home");
             });
         } catch (err) {
             alert(err);
@@ -58,7 +65,7 @@ function AccountCreationForm({ created }) {
     return (<>
         <div className="row justify-content-center">
             <div className="col-xs-12 col-md-8 col-lg-6">
-            <p className="center"><b>Note:</b> This server does <b>NOT</b> use https and does not recommend using real passwords or emails. This website does not require a valid email and does not have any password requirements.</p>
+                <p className="center"><b>Note:</b> This server does <b>NOT</b> use https and does not recommend using real passwords or emails. This website does not require a valid email and does not have any password requirements.</p>
                 <form className="formContainer">
                     <h1>Create Account!</h1>
 

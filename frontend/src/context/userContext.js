@@ -31,10 +31,10 @@ function UserContextProvider({ children }) {
     const [notifications, setNotificationsState] = useState([]);
 
     async function setUser(_id, _token, _userName, _email, _rooms, _friends) {
+        console.log("id", _id)
         setId(_id);
         setToken(_token);
         setUserName(_userName);
-
 
         let sID = Cookies.get('sSID');
         let auth = {
@@ -66,19 +66,21 @@ function UserContextProvider({ children }) {
                     params: { id: _id }
                 }
             ).then((res) => {
-                res.data.forEach((friend) => {
-                    friend.online = false;
-                    socket.emit('joinRoom', friend._id);
-                    socket.emit('checkOnline', friend._id);
-                });
-                setFriendsState([...res.data]);
+                if (res.data) {
+                    res.data.forEach((friend) => {
+                        friend.online = false;
+                        socket.emit('joinRoom', friend._id);
+                        socket.emit('checkOnline', friend._id);
+                    });
+                    setFriendsState([...res.data]);
+                }
             });
 
             // Get Notifications
             await axios.get(`${serverURL}/notifications/${_id}`, {
                 headers: { Authorization: "bearer " + _token }
             }).then((res) => {
-                setNotificationsState([...res.data]);
+                if (res.data) setNotificationsState([...res.data]);
             });
 
 
