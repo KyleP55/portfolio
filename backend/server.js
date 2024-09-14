@@ -74,6 +74,10 @@ io.on('connection', (socket) => {
         io.to(socket.id).emit('setSession', sSID);
     });
 
+    socket.on('trigger', ()=> {
+        io.to(socket.id).emit('varTest')
+    })
+
     socket.on('showall', () => {
         async function showAllSockets() {
             const socks = await io.fetchSockets();
@@ -102,14 +106,14 @@ io.on('connection', (socket) => {
     });
 
     socket.on('checkOnline', (roomId) => {
-        console.log(roomId)
+        //console.log(roomId)
         async function checkOnline() {
             const socks = await io.in(roomId).fetchSockets();
 
             socks.forEach((i) => {
                 if (i.id != socket.id) {
                     const friendId = sessionStore.findSessionBySocketID(i.id);
-                    console.log('should be joining ' + friendId)
+                    //console.log('should be joining ' + friendId)
                     io.to(roomId).emit('joined', friendId);
                 }
             });
@@ -134,6 +138,7 @@ io.on('connection', (socket) => {
 
     socket.on('sendNotification', (info) => {
         const targetID = sessionStore.findSessionByName(info.target);
+        console.log("target:",targetID)
 
         if (targetID) io.to(targetID.socketID).emit('notification', info);
     });

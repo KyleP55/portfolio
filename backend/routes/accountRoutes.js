@@ -26,12 +26,9 @@ router.post('/createAccount', async (req, res) => {
         });
 
         const newAccount = await account.save();
-        console.log('created account');
 
         const sig = { id: newAccount._id, email: newAccount.email, userName: newAccount.userName };
         const accessToken = generateToken(sig);
-
-        console.log('signed token');
 
         res.status(201).json({ token: accessToken });
     } catch (err) {

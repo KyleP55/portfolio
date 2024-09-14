@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useCallback } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { socket } from "../util/socket.js";
@@ -29,7 +29,6 @@ function HomeChatPage() {
 
     // Connect socket when logged in
     useEffect(() => {
-        if (userContext.id && socket.connected) {
             //authSocket();
 
             // Connection Error
@@ -46,7 +45,7 @@ function HomeChatPage() {
 
             // Set Session Cookie
             socket.on('setSession', (sSID) => {
-                Cookies.set('sSID', sSID, { expires: 7 })
+                Cookies.set('sSID', sSID, { expires: 7 });
             });
 
             // Update Friends
@@ -61,7 +60,7 @@ function HomeChatPage() {
                             }
                         ).then((res) => {
                             console.log(res)
-                            //userContext.setFriends([...res.data]);
+                            userContext.setFriends([...res.data]);
                         });
                     }
 
@@ -73,17 +72,17 @@ function HomeChatPage() {
 
             // Friend Online/Offline
             socket.on('joined', (userId) => {
+                console.log('joined trigger')
                 userContext.setFriendsOnline(userId, true);
-                console.log(userId + ' joined')
             });
 
-            socket.on('leftRoom', (userId) => {
-                userContext.setFriendsOnline(userId, false);
-                console.log(userId + ' left')
-            });
+            // socket.on('leftRoom', (userId) => {
+            //     userContext.setFriendsOnline(userId, false);
+            // });
 
             // On Notification
             socket.on('notification', (info) => {
+                alert('notification')
                 try {
                     axios.get(
                         `${serverURL}/notifications/${userContext.id}`,
@@ -96,6 +95,38 @@ function HomeChatPage() {
                 } catch (err) {
                     console.log(err.message)
                 }
+            });
+
+            socket.on('newMessage', (incRoom, incMessage) => {
+                let curRoom = null;
+                setCurrentRoom(prev => {
+                    curRoom = prev
+                    console.log('curPrev:', prev)
+                })
+                if (incRoom === currentRoom._id) {
+                    let newMessage = { ...incMessage, _id: new Date().toString() }
+
+                    setNewChat(newMessage);
+                }
+
+                return () => {
+                    socket.close();
+                }
+            });
+
+            // Room was deleted
+            socket.on('roomRemoved', (roomId) => {
+                let newArr = null;
+                userContext.setRooms(prev => console.log(prev))
+                userContext.rooms.forEach((r, i) => {
+                    if (r._id === roomId) newArr.splice(i, 1);
+                });
+                userContext.setRooms([...newArr]);
+
+                let curRoom = null;
+                setCurrentRoom(prev => curRoom = prev);
+    
+                if (curRoom && curRoom._id === roomId) setCurrentRoom();
             });
 
             // On Disconnect
@@ -112,17 +143,17 @@ function HomeChatPage() {
                 userContext.logOut();
                 nav('/');
             });
-        }
-    }, [userContext.friends]);
+    }, []);
 
     // Join Rooms with Socket.io
     useEffect(() => {
         if (userContext.rooms.length > 0 && socketConnect) {
             userContext.rooms.forEach((room) => {
+                alert('rooms:', room)
                 socket.emit('joinRoom', room._id);
             });
         }
-        console.log('size: ' + userContext.friends.length + ' and ' + socketConnect)
+
         if (userContext.friends.length > 0 && socketConnect) {
             userContext.friends.forEach((friend) => {
                 socket.emit('joinRoom', friend._id);
@@ -131,33 +162,6 @@ function HomeChatPage() {
         }
         setSocketConnect(false);
     }, [userContext.rooms, userContext.friends, socketConnect]);
-
-    // Update message if room = socket
-    useEffect(() => {
-        if (currentRoom) {
-            socket.on('newMessage', (incRoom, incMessage) => {
-                if (incRoom === currentRoom._id) {
-                    let newMessage = { ...incMessage, _id: new Date().toString() }
-
-                    setNewChat(newMessage);
-                }
-
-                return () => {
-                    socket.close();
-                }
-            });
-        }
-        // Room was deleted
-        socket.on('roomRemoved', (roomId) => {
-            let newArr = [...userContext.rooms];
-            userContext.rooms.forEach((r, i) => {
-                if (r._id === roomId) newArr.splice(i, 1);
-            });
-            userContext.setRooms([...newArr]);
-
-            if (currentRoom && currentRoom._id === roomId) setCurrentRoom();
-        });
-    }, [currentRoom]);
 
     // Change current room
     function changeRoom(newRoom) {
@@ -194,6 +198,7 @@ function HomeChatPage() {
 
     // Friend Request
     async function onFriendRequest(name) {
+        // Check if target is friend already
         let friendExists = false;
         userContext.friends.forEach((i) => {
             if (i.userName === name) {
@@ -215,6 +220,7 @@ function HomeChatPage() {
                     info,
                     { headers: { Authorization: 'bearer ' + userContext.token } }
                 ).then((res) => {
+                    alert('should be sent')
                     socket.emit('sendNotification', info);
                 })
             } catch (err) {

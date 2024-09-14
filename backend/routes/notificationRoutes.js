@@ -10,7 +10,7 @@ router.post('/', async (req, res) => {
     try {
         targetID = await accountSchema.findOne({ userName: x.target }, { _id: 1 });
         if (targetID) {
-            console.log(targetID);
+            //console.log(targetID);
         } else {
             throw 'Account not found'
         }
@@ -29,7 +29,7 @@ router.post('/', async (req, res) => {
     try {
         await newNotification.save()
             .then((r) => {
-                console.log('notification created')
+                //console.log('notification created')
                 return res.json({ message: 'Completed' });
             });
 

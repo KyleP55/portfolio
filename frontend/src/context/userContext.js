@@ -100,15 +100,22 @@ function UserContextProvider({ children }) {
     }
 
     function setFriendsOnline(id, status) {
-        let arr = [...friends];
+        let arr = [];
+        setFriendsState(prev => {
+            arr = [...prev]
+            console.log('ucFo:', prev)
+        });
+        
+        console.log('arr:', arr)
+
         arr.forEach((f, i) => {
-            console.log('matching ' + f[0] + ' to ' + id)
+            console.log('matching ' + f.friendID + ' to ' + id)
             if (f.friendID === id) {
                 arr[i].online = status;
             }
         });
 
-        setFriendsState([...friends])
+        //setFriendsState([...arr])
     }
 
     function logOut() {

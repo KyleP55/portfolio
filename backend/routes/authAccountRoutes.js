@@ -18,7 +18,7 @@ router.get('/context', async (req, res) => {
 
         return res.json(account);
     } catch (err) {
-        console.log(err)
+        console.log(err);
         return res.json(err);
     }
 });
@@ -48,7 +48,6 @@ router.post('/joinRoom', async (req, res) => {
 
         const room = await roomSchema.findById(req.body.roomID);
 
-        console.log(room)
         return res.json(room);
 
     } catch (err) {
@@ -58,7 +57,6 @@ router.post('/joinRoom', async (req, res) => {
 
 // Leave Room
 router.delete('/leaveRoom/:id', async (req, res) => {
-    console.log(req.userData.id)
     try {
         let updatedRooms = await accountSchema.findById(req.userData.id);
         if (!updatedRooms) return res.json({ message: "Account not found" });
@@ -75,7 +73,7 @@ router.delete('/leaveRoom/:id', async (req, res) => {
             return res.json(r.rooms);
         });
     } catch (err) {
-        console.log(err.message)
+        console.log(err.message);
         return res.json({ message: err.message });
     }
 });
@@ -129,7 +127,6 @@ router.get('/friends', async (req, res) => {
                         }
                     });
                 });
-                console.log(friendsList)
                 return res.json(friendsList);
             });
         })
