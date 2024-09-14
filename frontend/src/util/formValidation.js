@@ -13,7 +13,7 @@ export async function emailVali(x) {
     if (!res) return ('Email not valid');
 
     // Check db if email is used
-    res = await axios.post('localhost:5000/accounts/checkEmail', { email: x });
+    res = await axios.post(`${serverURL}/accounts/checkEmail`, { email: x });
     if (res.data.emailTaken) return ('Account already exists with this email');
 
     return null;
@@ -25,7 +25,7 @@ export function passVali(x) {
     if (isEmpty(x)) return ("Field is required");
 
     // Check length
-    if (x.length < 8 || x.length > 16) return ('Password must be between 8 and 16 charaters');
+    // if (x.length < 8 || x.length > 16) return ('Password must be between 8 and 16 charaters');
 
     return null;
 }
@@ -46,8 +46,10 @@ export async function userVali(x) {
     // Check if empty
     if (isEmpty(x)) return ("Field is required");
 
+    x.trim();
+
     // Check DB for username
-    const res = await axios.post('/accounts/checkUserName', { userName: x });
+    const res = await axios.post(`${serverURL}/accounts/checkUserName`, { userName: x });
     if (res.data.nameTaken) return ('User name taken');
 
     return null;

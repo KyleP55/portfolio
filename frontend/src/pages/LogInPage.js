@@ -26,16 +26,15 @@ function LogInPage() {
                 password: pass
             }
 
-            console.log(serverURL)
-
             await axios.post(serverURL + '/accounts/login', info)
                 .then((res) => {
-                    if (res.data.message) return alert('Error: ' + res.data.message)
+                    if (res.data.errMessage) return alert('Error: ' + res.data.errMessage);
+
                     let x = res.data;
                     userContext.setUser(x.id, x.token, x.userName, x.email, x.rooms, x.friends);
 
                     Cookies.set('token', res.data.token, { expires: 7 });
-                    nav("/home")
+                    nav("/home");
                 })
         } catch (err) {
             alert(err.message);
@@ -78,7 +77,7 @@ function LogInPage() {
                                 <button type="button" className="chatNavButton" onClick={onSubmit}>Login</button>
                             </div>
                             <div className="formButtonContainer">
-                            <button type="button" className="chatNavButton cancel" onClick={() => {nav('/createAccount')}}>Create Account</button>
+                                <button type="button" className="chatNavButton cancel" onClick={() => { nav('/createAccount') }}>Create Account</button>
                             </div>
                         </form>
                     </div>
