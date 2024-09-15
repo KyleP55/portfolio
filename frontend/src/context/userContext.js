@@ -31,7 +31,6 @@ function UserContextProvider({ children }) {
     const [notifications, setNotificationsState] = useState([]);
 
     async function setUser(_id, _token, _userName, _email, _rooms, _friends) {
-        console.log("id", _id)
         setId(_id);
         setToken(_token);
         setUserName(_userName);
@@ -102,22 +101,15 @@ function UserContextProvider({ children }) {
     }
 
     function setFriendsOnline(id, status) {
-        let arr = [];
-        setFriendsState(prev => {
-            arr = [...prev]
-            console.log('ucFo:', prev)
-        });
-        
-        console.log('arr:', arr)
+        let arr = [...friends];
 
         arr.forEach((f, i) => {
-            console.log('matching ' + f.friendID + ' to ' + id)
             if (f.friendID === id) {
                 arr[i].online = status;
             }
         });
 
-        //setFriendsState([...arr])
+        setFriendsState([...arr])
     }
 
     function logOut() {

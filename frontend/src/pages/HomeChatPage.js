@@ -25,147 +25,151 @@ function HomeChatPage() {
             sessionID: sID
         }
         socket.emit('auth', auth);
+        setSocketConnect(true);
     }
 
     // Connect socket when logged in
     useEffect(() => {
-            //authSocket();
+        //authSocket();
 
-            // Connection Error
-            socket.on('connect_error', (err) => {
-                alert(err.message)
-            });
-            // Logged In Elsewhere
-            socket.on('loggedInElsewhere', () => {
-                alert('Account logged in elsewhere');
-                socket.disconnect();
-                userContext.logOut();
-                nav('/');
-            });
+        // Connection Error
+        socket.on('connect_error', (err) => {
+            alert(err.message)
+        });
+        // Logged In Elsewhere
+        socket.on('loggedInElsewhere', () => {
+            alert('Account logged in elsewhere');
+            socket.disconnect();
+            userContext.logOut();
+            nav('/');
+        });
 
-            // Set Session Cookie
-            socket.on('setSession', (sSID) => {
-                Cookies.set('sSID', sSID, { expires: 7 });
-            });
+        // Set Session Cookie
+        socket.on('setSession', (sSID) => {
+            Cookies.set('sSID', sSID, { expires: 7 });
+        });
 
-            // Update Friends
-            socket.on('updateFriendsTrigger', () => {
-                try {
-                    async function getFriends() {
-                        await axios.get(
-                            `${serverURL}/authAccounts/friends`,
-                            {
-                                headers: { Authorization: "bearer " + userContext.token },
-                                params: { id: userContext.id }
-                            }
-                        ).then((res) => {
-                            console.log(res)
-                            userContext.setFriends([...res.data]);
-                        });
-                    }
-
-                    getFriends();
-                } catch (err) {
-                    console.log(err.message);
-                }
-            });
-
-            // Friend Online/Offline
-            socket.on('joined', (userId) => {
-                console.log('joined trigger')
-                userContext.setFriendsOnline(userId, true);
-            });
-
-            // socket.on('leftRoom', (userId) => {
-            //     userContext.setFriendsOnline(userId, false);
-            // });
-
-            // On Notification
-            socket.on('notification', (info) => {
-                alert('notification')
-                try {
-                    axios.get(
-                        `${serverURL}/notifications/${userContext.id}`,
-                        { headers: { Authorization: "bearer " + userContext.token } }
+        // Update Friends
+        socket.on('updateFriendsTrigger', () => {
+            try {
+                async function getFriends() {
+                    await axios.get(
+                        `${serverURL}/authAccounts/friends`,
+                        {
+                            headers: { Authorization: "bearer " + userContext.token },
+                            params: { id: userContext.id }
+                        }
                     ).then((res) => {
-                        userContext.setNotifications([...res.data]);
-
-
-                    })
-                } catch (err) {
-                    console.log(err.message)
-                }
-            });
-
-            socket.on('newMessage', (incRoom, incMessage) => {
-                let curRoom = null;
-                setCurrentRoom(prev => {
-                    curRoom = prev
-                    console.log('curPrev:', prev)
-                })
-                if (incRoom === currentRoom._id) {
-                    let newMessage = { ...incMessage, _id: new Date().toString() }
-
-                    setNewChat(newMessage);
-                }
-
-                return () => {
-                    socket.close();
-                }
-            });
-
-            // Room was deleted
-            socket.on('roomRemoved', (roomId) => {
-                let newArr = null;
-                userContext.setRooms(prev => console.log(prev))
-                userContext.rooms.forEach((r, i) => {
-                    if (r._id === roomId) newArr.splice(i, 1);
-                });
-                userContext.setRooms([...newArr]);
-
-                let curRoom = null;
-                setCurrentRoom(prev => curRoom = prev);
-    
-                if (curRoom && curRoom._id === roomId) setCurrentRoom();
-            });
-
-            // On Disconnect
-            socket.on('disconnect', (reason, details) => {
-                if (socket.active) {
-                    let answer = window.confirm("Disconnected from server, Reconnect? \n\n Reason: " + reason);
-                    if (answer) {
-                        socket.connect();
+                        userContext.setFriends([...res.data]);
                         setSocketConnect(true);
-                        authSocket();
-                        return;
-                    }
+                        alert('should be true')
+                    });
                 }
-                userContext.logOut();
-                nav('/');
-            });
+
+                getFriends();
+            } catch (err) {
+                console.log(err.message);
+            }
+        });
+
+        // On Notification
+        socket.on('notification', (info) => {
+            try {
+                axios.get(
+                    `${serverURL}/notifications/${userContext.id}`,
+                    { headers: { Authorization: "bearer " + userContext.token } }
+                ).then((res) => {
+                    userContext.setNotifications([...res.data]);
+                })
+            } catch (err) {
+                console.log(err.message)
+            }
+        });
     }, []);
+
+    // On message
+    useEffect(() => {
+        socket.removeAllListeners('newMessage');
+        socket.on('newMessage', (incRoom, incMessage) => {
+            if (currentRoom && incRoom === currentRoom._id) {
+                let newMessage = { ...incMessage, _id: new Date().toString() }
+
+                setNewChat(newMessage);
+            }
+
+            return () => {
+                socket.close();
+            }
+        });
+    }, [currentRoom]);
+
+    // Friend Online/Offline
+    useEffect(() => {
+        socket.removeAllListeners('joined');
+        socket.on('joined', (userId) => {
+            userContext.setFriendsOnline(userId, true);
+        });
+
+        socket.removeAllListeners('leftRoom');
+        socket.on('leftRoom', (userId) => {
+            userContext.setFriendsOnline(userId, false);
+        });
+
+    }, [userContext.friends]);
+
+    // Room was deleted
+    useEffect(() => {
+        socket.removeAllListeners('roomRemoved');
+        socket.on('roomRemoved', (roomId) => {
+            let newArr = [...userContext.rooms];
+
+            userContext.rooms.forEach((r, i) => {
+                if (r._id === roomId) newArr.splice(i, 1);
+            });
+            userContext.setRooms([...newArr]);
+
+            if (currentRoom && currentRoom._id === roomId) setCurrentRoom();
+        });
+    }, [userContext.rooms, currentRoom]);
+
+    // On Disconnect
+    useEffect(() => {
+        socket.removeAllListeners('disconnect');
+        socket.on('disconnect', (reason, details) => {
+            if (socket.active) {
+                let answer = window.confirm("Disconnected from server, Reconnect? \n\n Reason: " + reason);
+                if (answer) {
+                    socket.connect();
+                    authSocket();
+                    return;
+                }
+            }
+            userContext.logOut();
+            nav('/');
+        });
+    }, [userContext.id]);
 
     // Join Rooms with Socket.io
     useEffect(() => {
-        if (userContext.rooms.length > 0 && socketConnect) {
-            userContext.rooms.forEach((room) => {
-                alert('rooms:', room)
-                socket.emit('joinRoom', room._id);
-            });
-        }
+        if (socketConnect) {
+            if (userContext.rooms) {
+                userContext.rooms.forEach((room) => {
+                    socket.emit('joinRoom', room._id);
+                });
+            }
 
-        if (userContext.friends.length > 0 && socketConnect) {
-            userContext.friends.forEach((friend) => {
-                socket.emit('joinRoom', friend._id);
-                socket.emit('checkOnline', friend._id);
-            });
+            if (userContext.friends) {
+                userContext.friends.forEach((friend) => {
+                    socket.emit('joinRoom', friend._id);
+                    socket.emit('checkOnline', friend._id);
+                });
+            }
+            setSocketConnect(false);
         }
-        setSocketConnect(false);
-    }, [userContext.rooms, userContext.friends, socketConnect]);
+    }, [socketConnect]);
 
     // Change current room
     function changeRoom(newRoom) {
-        console.log(newRoom)
         setCurrentRoom(newRoom);
     }
 
@@ -220,7 +224,6 @@ function HomeChatPage() {
                     info,
                     { headers: { Authorization: 'bearer ' + userContext.token } }
                 ).then((res) => {
-                    alert('should be sent')
                     socket.emit('sendNotification', info);
                 })
             } catch (err) {
