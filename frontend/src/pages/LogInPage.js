@@ -56,7 +56,7 @@ function LogInPage() {
                     <div className="formContainer">
                         <form>
                             <h1>Login</h1><br />
-                            <p className="center"><b>Note:</b> This server does <b>NOT</b> use https and does not recommend using real passwords or emails. This website does not require a valid email and does not have any password requirements.</p>
+                            <p className="center"><b>Note:</b> This server does <b>NOT</b> use https and does not recommend using real passwords or emails as it will not be encrypted. This website does not require a real email but does require valid email format. There are no password requirements as well.</p>
                             <label><b>Email</b></label>
                             <input
                                 type="text"
