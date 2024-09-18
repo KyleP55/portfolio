@@ -10,17 +10,9 @@ function CreditsPage() {
             <p>This is a chat app in progress that still has bugs and features being worked on.</p>
             <h2>To Do:</h2>
             <ol>
-                <li>Finish mobile nav menu</li>
                 <li>Add unread message notifications</li>
                 <li>Add toaster pop ups for friends logging on/off</li>
                 <li>Invite people to room by name</li>
-            </ol>
-            <h2>Known Bugs:</h2>
-            <ol>
-                <li>Endless reconnect prompt when diconnected</li>
-                <li>Mobile menu button logging user out</li>
-                <li>Chat Nav panel squished when mobile keyboard is open</li>
-                <li>Logged in somewhere else prompt when app closed incorrectly</li>
             </ol>
         </div>
         <br />
