@@ -26,7 +26,7 @@ const notificationRouter = require("./routes/notificationRoutes.js");
 // Socket Options
 const io = require('socket.io')(server, {
     cors: {
-        origin: [frontendUrl, frontendUrl.slice(0, -5), 'chattyapp.ca', 'http://chattyapp.ca'],
+        origin: "*",
         allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
         methods: ["GET", "POST", "DELETE", "OPTIONS"]
     }
@@ -167,7 +167,7 @@ io.on('connection', (socket) => {
 app.use(express.json());
 
 const corsOptions = {
-    origin: [frontendUrl, frontendUrl.slice(0, -5), 'chattyapp.ca/', 'http://chattyapp.ca/'],
+    origin: "*",
     allowedHeaders: ['Access-Control-Allow-Headers', 'Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
     methods: "GET,POST,DELETE,OPTIONS",
     preflightContinue: false
