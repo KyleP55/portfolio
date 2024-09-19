@@ -23,10 +23,11 @@ const messageRouter = require("./routes/messageRoutes.js");
 const roomRouter = require("./routes/roomRoutes.js");
 const notificationRouter = require("./routes/notificationRoutes.js");
 
+const frontendArr = [frontendUrl, frontendUrl.slice(0, -5), 'http://chattyapp.ca', 'http://chattyapp.ca/', 'chattyapp.ca', 'chattyapp.ca/']
 // Socket Options
 const io = require('socket.io')(server, {
     cors: {
-        origin: "*",
+        origin: frontendArr,
         allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
         methods: ["GET", "POST", "DELETE", "OPTIONS"]
     }
@@ -167,7 +168,7 @@ io.on('connection', (socket) => {
 app.use(express.json());
 
 const corsOptions = {
-    origin: "*",
+    origin: frontendArr,
     allowedHeaders: ['Access-Control-Allow-Headers', 'Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
     methods: "GET,POST,DELETE,OPTIONS",
     preflightContinue: false
