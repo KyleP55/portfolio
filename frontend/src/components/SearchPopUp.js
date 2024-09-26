@@ -9,7 +9,7 @@ const serverURL = process.env.REACT_APP_BACKEND_URL;
 function SearchPopUp({ isRoom, onClose }) {
   const userContext = useContext(UserContext);
   const [pubRooms, setPubRooms] = useState();
-  const [searchText, setSearchText] = useState('PublicTest');
+  const [searchText, setSearchText] = useState('');
 
   // Load all public rooms
   useEffect(() => {

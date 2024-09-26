@@ -15,11 +15,21 @@ function LogInPage() {
     const nav = useNavigate();
     const [email, setEmail] = useState('');
     const [pass, setPass] = useState('');
+    const [error, setError] = useState();
     const [modInfo, setModInfo] = useState([null, null]);
 
+    // Submit Login
     async function onSubmit(e) {
         e.preventDefault();
 
+        if (email === '') {
+            setError('Error: Email is empty!');
+            return;
+        }
+        if (pass === '') {
+            setError('Error: Password is empty!');
+            return;
+        }
         try {
             const info = {
                 email: email,
@@ -28,7 +38,7 @@ function LogInPage() {
 
             await axios.post(serverURL + '/accounts/login', info)
                 .then((res) => {
-                    if (res.data.errMessage) return alert('Error: ' + res.data.errMessage);
+                    if (res.data.errMessage) return setError('Error: ' + res.data.errMessage);
 
                     let x = res.data;
                     userContext.setUser(x.id, x.token, x.userName, x.email, x.rooms, x.friends);
@@ -73,6 +83,7 @@ function LogInPage() {
                                 value={pass}
                             />
 
+                            <p className="errorMessage">{error}</p>
                             <div className="formButtonContainer">
                                 <button type="button" className="chatNavButton" onClick={onSubmit}>Login</button>
                             </div>

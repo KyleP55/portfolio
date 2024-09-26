@@ -102,7 +102,7 @@ scrollbar-width: none;  /* Firefox */
     background-color: #fff;
 }
 
-@media only screen and (max-width: 660px) {
+@media only screen and (max-width: 576px) {
     .sideNav {
         position: fixed;
         z-index: 1;

@@ -93,7 +93,7 @@ function ChatWindow({ room, onSend, update, sendFriendRequest }) {
     }, [room]);
 
     return (<>
-        <div className="col-xs-12 col-sm-8 col-md-8 col-lg-10 p-0 maxVH chatContainer">
+        <div className="col-xs-12 col-sm-7 col-md-8 col-lg-9 p-0 maxVH chatContainer">
             <div className="messageBox">
                 <input
                     type="text"

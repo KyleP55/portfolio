@@ -5,13 +5,19 @@ function CreateRoomPopUp({ onCreate, onClose }) {
     const [visability, setVisability] = useState(true);
 
     return (<div className="popupContainer">
+        <div className="findCloseDiv">
+            <div className="findCloseBtn" onClick={onClose}>
+        <p>&times;</p></div>
+      </div>
+      <h3 className="center">Create Room</h3>
         <form>
-            <label>Room Name</label>
+            <label>Room Name:</label>
             <input
                 type="text"
                 placeholder='Room Name'
                 onChange={(e) => setRoomName(e.target.value)}
                 value={roomName}
+                className='messageInput'
                 id="messageInput"
             />
             <div className="radioDiv">
@@ -21,6 +27,7 @@ function CreateRoomPopUp({ onCreate, onClose }) {
                         value={true}
                         name="visability"
                         onChange={() => setVisability(true)}
+                        checked
                     /> Public
                 </div>
                 <div>
@@ -33,13 +40,17 @@ function CreateRoomPopUp({ onCreate, onClose }) {
                 </div>
             </div>
 
-            <button onClick={(e) => {
+            <button 
+                className="chatNavButton" 
+                onClick={(e) => {
                 e.preventDefault();
                 onCreate(roomName, visability);
             }}>
                 Create
             </button>
-            <button onClick={onClose}>
+            <button 
+                className="chatNavButton"
+                onClick={onClose}>
                 Cancel
             </button>
         </form>

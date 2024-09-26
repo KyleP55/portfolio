@@ -36,7 +36,7 @@ export function passMatch(x, y) {
     if (isEmpty(x)) return ("Field is required");
 
     // Check if pass's match
-    if (x != y) return ('Passwords do not match!');
+    if (x !== y) return ('Passwords do not match!');
 
     return null;
 }
