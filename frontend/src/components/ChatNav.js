@@ -160,7 +160,7 @@ function ChatNav({ viewRoom, rooms, socketTest }) {
 
         <div className="col-sm-5 col-md-4 col-lg-3 sideNav chatNavContainer maxVH" id="sideNavList">
             <p className="navTitle">Your Rooms</p>
-            <div className="roomsDiv">
+            <div className="roomsDiv marBot">
                 {userContext.rooms && userContext.rooms.map((room, i) => {
                     return <RoomButton
                         info={room}
@@ -181,7 +181,7 @@ function ChatNav({ viewRoom, rooms, socketTest }) {
             </button>
 
             <p className="navTitle">Your Friends</p>
-            <div className="roomsDiv">
+            <div className="roomsDiv marBot">
                 {userContext.friends && userContext.friends.map((friend, i) => {
                     return <FriendButton
                         friend={friend}
@@ -193,7 +193,7 @@ function ChatNav({ viewRoom, rooms, socketTest }) {
                     />
                 })}
             </div>
-            <button onClick={() => alert("Coming soon!")} className="chatNavButton">
+            <button onClick={toggleRoomPopup.bind(this, false)} className="chatNavButton">
                 Add Friend
             </button>
         </div>

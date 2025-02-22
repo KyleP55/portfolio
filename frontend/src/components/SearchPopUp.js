@@ -70,7 +70,6 @@ function SearchPopUp({ isRoom, onClose }) {
     let found = false;
     // Check if you belong to room already
     userContext.rooms.forEach((r) => {
-      console.log(r.name, searchText)
       if (r.name === searchText) {
         alert('You already belong to this room!');
         found = true;
@@ -88,6 +87,28 @@ function SearchPopUp({ isRoom, onClose }) {
         alert(res.data.errorMessage);
         return;
       } else {
+        // Confirm
+        let answer = window.confirm('Join room ' + res.name + '?');
+        if (!answer) {
+          return;
+        }
+
+        const info = {
+          _id: userContext.id,
+          roomID: res.id
+        }
+    
+        // ********** ADD PUBLIC CHECK ******
+        // Join Room
+        axios.post(
+          `${serverURL}/authAccounts/joinRoom`,
+          info,
+          { headers: { Authorization: "bearer " + userContext.token } }
+        ).then((res) => {
+          userContext.setRooms([...userContext.rooms, res.data]);
+          socket.emit('joinRoom', res.data._id);
+        });
+
         alert('Request to join room ' + searchText + ' sent!');
       }
 
@@ -97,12 +118,57 @@ function SearchPopUp({ isRoom, onClose }) {
     }
   }
 
-  const roomForm = <>
-    <div className="findDiv">
-      <div className="findCloseDiv"><div className="findCloseBtn" onClick={onClose}>
-        <p>&times;</p>
-      </div></div>
+   // User Search
+   async function searchUser() {
+    let found = false;
+    // Check if you already have this friend
+    userContext.friends.forEach((r) => {
+      if (r.userName === searchText) {
+        alert('You already belong to this room!');
+        found = true;
+      }
+    });
+    if (found) return;
 
+    try {
+      const res = await axios.get(`${serverURL}/authAccounts/getUsers/${searchText}`,
+        { headers: { Authorization: 'bearer ' + userContext.token } }
+      );
+
+      if (res.data.errorMessage) {
+        alert(res.data.errorMessage);
+        return;
+      } else {
+        // Confirm
+        let answer = window.confirm('Send friend request to ' + res.body.name + '?');
+        if (!answer) {
+          return;
+        }
+
+        // Add Friend
+        const info = {
+          id: userContext.id,
+          name: res.body.name
+        }
+
+        axios.post(
+          `${serverURL}/authAccounts/joinRoom`,
+          info,
+          { headers: { Authorization: "bearer " + userContext.token } }
+        ).then((res) => {
+          userContext.setRooms([...userContext.friends, res.data]);
+          socket.emit('joinRoom', res.data._id);
+        });
+        alert('Friend request sent to ' + searchText + '!');
+      }
+
+
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+
+  const roomForm = <>
       <div className="roomsListDiv">
         {pubRooms && pubRooms.map((r) => {
           return <button key={r._id}
@@ -124,12 +190,29 @@ function SearchPopUp({ isRoom, onClose }) {
       <div className="chatNavButton" onClick={searchRoom}>
         Search
       </div>
-    </div>
   </>
 
+const friendForm = <>
+  <label><b>Search:</b></label>
+  <input
+    type="text"
+    placeholder='Enter User Name'
+    onChange={(e) => setSearchText(e.target.value)}
+    value={searchText}
+  />
+  <div className="chatNavButton" onClick={searchUser}>
+    Search
+  </div>
+</>
 
   return (<div className="popupContainer">
-    {isRoom && roomForm}
+    <div className="findDiv">
+      <div className="findCloseDiv"><div className="findCloseBtn" onClick={onClose}>
+        <p>&times;</p>
+      </div></div>
+      {isRoom === true && roomForm}
+      {!isRoom === false && friendForm}
+    </div>
   </div>);
 }
 

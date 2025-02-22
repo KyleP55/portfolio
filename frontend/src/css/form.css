@@ -19,7 +19,7 @@ form {
 
 .popUpBorder {
     background-color: rgb(255, 255, 255);
-    box-shadow: 1px 1px 1px 2px #888888;
+    box-shadow: 1px 1px 1px 2px #b0b0b0;
     border-radius: 8px 0px 8px 8px;
     width: 300px;
     padding: 16px;
@@ -64,7 +64,7 @@ form {
 
 .popupContainer {
     background-color: rgb(255, 255, 255);
-    box-shadow: 1px 1px 1px 2px #888888;
+    box-shadow: 1px 1px 1px 2px #b0b0b0;
     position: absolute;
     padding: 6px 6px;
     top: 50%;

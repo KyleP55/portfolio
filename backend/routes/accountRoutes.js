@@ -6,6 +6,11 @@ const jwt = require('jsonwebtoken');
 
 const jwtSecret = process.env.JWT_SECRET || 'Q7BljLhFTh04xTR7F4xQCB3tsj7saogd';
 
+// Test
+router.post('/test', async (req, res) => {
+    return res.status(200).json({ message: 'Test returned!' });
+});
+
 // Create Account
 router.post('/createAccount', async (req, res) => {
     try {
@@ -30,9 +35,9 @@ router.post('/createAccount', async (req, res) => {
         const sig = { id: newAccount._id, email: newAccount.email, userName: newAccount.userName };
         const accessToken = generateToken(sig);
 
-        res.status(201).json({ token: accessToken });
+        return res.status(201).json({ token: accessToken });
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        return res.status(400).json({ message: err.message });
     }
 });
 

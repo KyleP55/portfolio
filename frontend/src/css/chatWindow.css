@@ -5,6 +5,7 @@
     margin-top: 8px;
     margin-bottom: 8px;
     margin-right: 5%;
+    box-shadow: 0px 1px 2px 2px #b0b0b0;
 }
 
 .bubbleContainerYou {
@@ -13,6 +14,7 @@
     margin-top: 8px;
     margin-bottom: 8px;
     margin-left: 5%;
+    box-shadow: 0px 1px 2px 2px #b0b0b0;
 }
 
 .messageText {

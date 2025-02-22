@@ -135,6 +135,18 @@ router.get('/friends', async (req, res) => {
     }
 });
 
+// User Search
+router.get('/getUsers/:userName', async(req, res) => {
+    try {
+        const fetchRes = await accountSchema.find({ userName: req.params.userName });
+        if (!fetchRes[0]) return res.json({ errorMessage: 'No Users Found!'});
+
+        return res.json({ message: 'UserFound' });
+    } catch(err) {
+        return res.json({ errorMessage: err.message });
+    }
+});
+
 //Generate Token
 function generateToken(sig) {
     return jwt.sign(sig, jwtSecret, { expiresIn: '60s' });

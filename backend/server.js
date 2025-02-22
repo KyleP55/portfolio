@@ -175,6 +175,11 @@ const corsOptions = {
 }
 app.use(cors(corsOptions));
 
+// Test
+app.get('/test', async (req, res) => {
+    return res.status(200).json({ message: 'Test returned!' });
+});
+
 app.use('/accounts', accountRouter);
 app.use(authCheck);
 app.use('/messages', messageRouter);
