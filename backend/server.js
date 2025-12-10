@@ -13,15 +13,11 @@ const server = http.createServer(app);
 const sessionStore = new InMemorySessionStore();
 
 const frontendUrl = process.env.FRONTEND_URL || 'http://127.0.0.1:3000';
-const frontendArr = [frontendUrl, frontendUrl.slice(0, -5), 'http://chattyapp.ca', 'http://chattyapp.ca/', 'chattyapp.ca', 'chattyapp.ca/'];
 
-const io = require('socket.io')(server, {
-    cors: {
-        origin: frontendArr,
-        allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
-        methods: ["GET", "POST", "DELETE", "OPTIONS"]
-    }
-});
+app.use(cors({
+    origin: frontendUrl,
+    credentials: true
+}));
 
 // connect DB
 mongoose.connect(process.env.DATABASE_URL || 'mongodb://127.0.0.1:27017/ChattyApp')
