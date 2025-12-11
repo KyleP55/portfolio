@@ -43,7 +43,12 @@ function LogInPage() {
                     let x = res.data;
                     userContext.setUser(x.id, x.token, x.userName, x.email, x.rooms, x.friends);
 
-                    Cookies.set('token', res.data.token, { expires: 7 });
+                    Cookies.set('token', res.data.token,
+                        {
+                            expires: 7,
+                            sameSite: "None",
+                            secure: true
+                        });
                     nav("/home");
                 })
         } catch (err) {

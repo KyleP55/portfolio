@@ -46,7 +46,13 @@ function HomeChatPage() {
 
         // Set Session Cookie
         socket.on('setSession', (sSID) => {
-            Cookies.set('sSID', sSID, { expires: 7 });
+            Cookies.set('sSID', sSID,
+                {
+                    expires: 7,
+                    sameSite: "None",
+                    secure: true
+
+                });
         });
 
         // Update Friends

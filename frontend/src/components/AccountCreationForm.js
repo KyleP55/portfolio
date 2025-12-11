@@ -54,7 +54,13 @@ function AccountCreationForm({ created }) {
 
                 alert('Account Created!');
 
-                Cookies.set('token', x.token, { expires: 7 });
+                Cookies.set('token', x.token,
+                    {
+                        expires: 7,
+                        sameSite: "None",
+                        secure: true
+                    }
+                );
                 nav("/home");
             });
         } catch (err) {
