@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 module.exports = (req, res, next) => {
+    console.log('checking auth middleware')
     try {
         let token = null;
 
