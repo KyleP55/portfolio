@@ -97,7 +97,7 @@ function SearchPopUp({ isRoom, onClose }) {
           _id: userContext.id,
           roomID: res.id
         }
-    
+
         // ********** ADD PUBLIC CHECK ******
         // Join Room
         axios.post(
@@ -118,8 +118,8 @@ function SearchPopUp({ isRoom, onClose }) {
     }
   }
 
-   // User Search
-   async function searchUser() {
+  // User Search
+  async function searchUser() {
     let found = false;
     // Check if you already have this friend
     userContext.friends.forEach((r) => {
@@ -169,41 +169,41 @@ function SearchPopUp({ isRoom, onClose }) {
   }
 
   const roomForm = <>
-      <div className="roomsListDiv">
-        {pubRooms && pubRooms.map((r) => {
-          return <button key={r._id}
-            className='chatNavButton'
-            onClick={onRoomClick.bind(this, r)}>
-            {r.name}
-          </button>
-        })}
-        {pubRooms && pubRooms.length < 1 &&
-          <h2 className="centerTitle">No Public Rooms To Join</h2>}
-      </div>
-      <label><b>Search:</b></label>
-      <input
-        type="text"
-        placeholder='Enter Room Name'
-        onChange={(e) => setSearchText(e.target.value)}
-        value={searchText}
-      />
-      <div className="chatNavButton" onClick={searchRoom}>
-        Search
-      </div>
+    <div className="roomsListDiv">
+      {pubRooms && pubRooms.map((r) => {
+        return <button key={r._id}
+          className='chatNavButton'
+          onClick={onRoomClick.bind(this, r)}>
+          {r.name}
+        </button>
+      })}
+      {pubRooms && pubRooms.length < 1 &&
+        <h2 className="centerTitle">No Public Rooms To Join</h2>}
+    </div>
+    <label><b>Search:</b></label>
+    <input
+      type="text"
+      placeholder='Enter Room Name'
+      onChange={(e) => setSearchText(e.target.value)}
+      value={searchText}
+    />
+    <div className="chatNavButton" onClick={searchRoom}>
+      Search
+    </div>
   </>
 
-const friendForm = <>
-  <label><b>Search:</b></label>
-  <input
-    type="text"
-    placeholder='Enter User Name'
-    onChange={(e) => setSearchText(e.target.value)}
-    value={searchText}
-  />
-  <div className="chatNavButton" onClick={searchUser}>
-    Search
-  </div>
-</>
+  const friendForm = <>
+    <label><b>Search:</b></label>
+    <input
+      type="text"
+      placeholder='Enter User Name'
+      onChange={(e) => setSearchText(e.target.value)}
+      value={searchText}
+    />
+    <div className="chatNavButton" onClick={searchUser}>
+      Search
+    </div>
+  </>
 
   return (<div className="popupContainer">
     <div className="findDiv">

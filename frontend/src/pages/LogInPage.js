@@ -36,7 +36,7 @@ function LogInPage() {
                 password: pass
             }
 
-            await axios.post(serverURL + '/accounts/login', info)
+            await axios.post(serverURL + '/api/accounts/login', info)
                 .then((res) => {
                     if (res.data.errMessage) return setError('Error: ' + res.data.errMessage);
 

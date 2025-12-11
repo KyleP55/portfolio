@@ -38,13 +38,13 @@ app.use(cors({
 }));
 
 // routes
-app.get('/test', (req, res) => res.status(200).json({ message: 'Test returned!' }));
-app.use('/accounts', require("./routes/accountRoutes.js"));
-app.use(require("./middleware/authCheck.js"));
-app.use('/messages', require("./routes/messageRoutes.js"));
-app.use('/rooms', require("./routes/roomRoutes.js"));
-app.use('/authAccounts', require("./routes/authAccountRoutes.js"));
-app.use('/notifications', require("./routes/notificationRoutes.js"));
+app.get('/api/test', (req, res) => res.status(200).json({ message: 'Test returned!' }));
+app.use('/api/accounts', require("./routes/accountRoutes.js"));
+app.use('/api', require("./middleware/authCheck.js"));
+app.use('/api/messages', require("./routes/messageRoutes.js"));
+app.use('/api/rooms', require("./routes/roomRoutes.js"));
+app.use('/api/authAccounts', require("./routes/authAccountRoutes.js"));
+app.use('/api/notifications', require("./routes/notificationRoutes.js"));
 
 // sockets
 setupSockets(io, sessionStore);
