@@ -6,6 +6,9 @@ module.exports = (req, res, next) => {
 
         if (req.headers.authorization) {
             token = req.headers.authorization.split(' ')[1];
+            console.log('auth', req.headers.authorization);
+            console.log('cookies', req.cookies);
+            if (!token) token = req.cookies.token;
         } else {
             console.log('no header: ' + req.headers.authorization);
             throw new Error('No Header/Token')
