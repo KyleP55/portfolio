@@ -18,7 +18,8 @@ const io = require('socket.io')(server, {
     cors: {
         origin: frontendUrl,
         allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
-        methods: ["GET", "POST", "DELETE", "OPTIONS"]
+        methods: ["GET", "POST", "DELETE", "OPTIONS"],
+        credential: true,
     }
 });
 
