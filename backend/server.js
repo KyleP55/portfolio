@@ -23,6 +23,8 @@ const io = require('socket.io')(server, {
     }
 });
 
+console.log("Loaded namespaces:", io._nsps.keys());
+
 // connect DB
 mongoose.connect(process.env.DATABASE_URL || 'mongodb://127.0.0.1:27017/ChattyApp')
     .then(() => console.log('Connected to Database'))

@@ -39,6 +39,9 @@ function NotificationsPopUp({ closeNotifications }) {
                                     }
                                 ).then((res) => {
                                     userContext.setFriends([...res.data]);
+                                    console.log('friend data:', res.data)
+                                    socket.emit('joinRoom', res.data[0]._id);
+                                    socket.emit('checkOnline', res.data[0]._id);
                                 });
 
                                 // Send friend accepted notification

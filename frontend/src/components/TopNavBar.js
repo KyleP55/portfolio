@@ -127,7 +127,7 @@ function TopNavBar() {
         <a onClick={logOut} className="accountText">
             Log Out
         </a>
-        <Link to="/account/login" className="accountText">
+        <Link to="#" onClick={() => alert('TODO: Create account page')} className="accountText">
             My Account
         </Link>
         <a>

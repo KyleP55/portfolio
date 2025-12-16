@@ -18,8 +18,8 @@ const serverURL = process.env.REACT_APP_BACKEND_URL;
 let navShow = false;
 
 function isMobile() {
-const regex = /Mobi|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
-return regex.test(navigator.userAgent);
+    const regex = /Mobi|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
+    return regex.test(navigator.userAgent);
 }
 
 function ChatNav({ viewRoom, rooms, socketTest }) {
@@ -73,14 +73,14 @@ function ChatNav({ viewRoom, rooms, socketTest }) {
                 navList.style.width = "0%";
                 button.style.left = "0%";
             } else {
-            navList.style.width = "85%";
-            button.style.left = "85%";
+                navList.style.width = "85%";
+                button.style.left = "85%";
             }
-            
+
             navShow = !navShow;
         }
     }
-    
+
 
 
     // Remove Room/Friend
@@ -193,7 +193,7 @@ function ChatNav({ viewRoom, rooms, socketTest }) {
                     />
                 })}
             </div>
-            <button onClick={toggleRoomPopup.bind(this, false)} className="chatNavButton">
+            <button onClick={() => alert('TODO: add friend search. You can click chat bubbles in group chats to add people for now.')} className="chatNavButton">
                 Add Friend
             </button>
         </div>

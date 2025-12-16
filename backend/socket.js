@@ -40,6 +40,7 @@ module.exports = function setupSockets(io, sessionStore) {
             socket.join(roomId);
             const userId = sessionStore.findSessionBySocketID(socket.id);
             io.to(roomId).emit('joined', userId);
+            console.log('someone joined', roomId)
         });
 
         socket.on('checkOnline', async (roomId) => {

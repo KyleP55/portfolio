@@ -1,14 +1,11 @@
 const jwt = require('jsonwebtoken');
 
 module.exports = (req, res, next) => {
-    console.log('checking auth middleware')
     try {
         let token = null;
 
         if (req.headers.authorization) {
             token = req.headers.authorization.split(' ')[1];
-            console.log('auth', req.headers.authorization);
-            console.log('token', token);
         } else {
             console.log('no header: ' + req.headers.authorization);
             throw new Error('No Header/Token')

@@ -211,7 +211,7 @@ function SearchPopUp({ isRoom, onClose }) {
         <p>&times;</p>
       </div></div>
       {isRoom === true && roomForm}
-      {!isRoom === false && friendForm}
+      {/*!isRoom === false && friendForm*/}
     </div>
   </div>);
 }
