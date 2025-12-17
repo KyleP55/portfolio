@@ -147,6 +147,14 @@ a.accountText:hover {
     right: 8px;
 }
 
+.navPad {
+    margin-right: 50px;
+}
+
+.bold {
+    font-weight: bold;
+}
+
 @media only screen and (max-width: 768px) {
     .navHeader {
         display: flex;

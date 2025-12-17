@@ -6,14 +6,9 @@ import notificationIcon from '../images/notificationIcon.png';
 function CreditsPage() {
     return (<div className="col-lg-4 col-md-8 col-xs-12 mx-auto">
         <div className="fullmar">
-            <h2>Welcome!</h2>
-            <p>This is a chat app in progress that still has bugs and features being worked on.</p>
-            <h2>To Do:</h2>
-            <ol>
-                <li>Add unread message notifications</li>
-                <li>Add toaster pop ups for friends logging on/off</li>
-                <li>Invite people to room by name</li>
-            </ol>
+            <h2>Credits</h2>
+            <p>A special thanks to the following people for their icons!</p>
+
         </div>
         <br />
         <div>

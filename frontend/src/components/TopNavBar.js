@@ -108,10 +108,13 @@ function TopNavBar() {
     // Links depending on signed in or not
     const unauthed = <>
         {logInWindow && <LogInPopUp toggle={toggleWindow} />}
+        <Link to="/features" className="accountText">
+            Features
+        </Link>
         <Link to="/credits" className="accountText">
             Credits
         </Link>
-        <Link to="/credits" className="accountText">
+        <Link to="/" className="accountText">
             Log In
         </Link>
         <Link to="/createAccount" className="accountText">
@@ -120,7 +123,11 @@ function TopNavBar() {
     </>
 
     const authed = <>
-        <p className="accountText">Welcome Back {userContext.userName}!</p>
+        <p className="accountText bold">Welcome Back {userContext.userName}!</p>
+        <p className="navPad" />
+        <Link to="/features" className="accountText">
+            Features
+        </Link>
         <Link to="/credits" className="accountText">
             Credits
         </Link>

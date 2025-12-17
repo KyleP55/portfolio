@@ -6,6 +6,7 @@ import HomeChatPage from "./pages/HomeChatPage";
 import TopNavBar from './components/TopNavBar';
 import CreateAccountPage from './pages/CreateAccountPage';
 import CreditsPage from './pages/Credits';
+import FeaturesPage from './pages/FeaturesPage.js';
 
 import "./css/main.css";
 import mhm from "./util/mobileHeightManager.js";
@@ -23,6 +24,7 @@ function App() {
             <Route path="/home" element={<LoginRD loginPage={false}><HomeChatPage /></LoginRD>} />
             <Route path="/createAccount" element={<CreateAccountPage />} />
             <Route path="/credits" element={<CreditsPage />} />
+            <Route path="/features" element={<FeaturesPage />} />
           </Route>
         </Routes>
       </BrowserRouter>
